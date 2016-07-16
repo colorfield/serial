@@ -1,0 +1,98 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Serial module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function serial_field_schema(array $field) {
+  $columns = array();
+
+  switch ($field['type']) {
+    case 'serial':
+      $columns['value'] = array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'sortable' => TRUE,
+        'views' => TRUE,
+        'index' => TRUE,
+      );
+      break;
+  }
+
+  return array('columns' => $columns);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function serial_schema() {
+  // Get the standard schema:
+  module_load_include('inc', 'serial');
+
+  $table_schema = _serial_get_table_schema();
+  $schema = array();
+
+  foreach (_serial_get_all_fields() as $field) {
+    $schema[_serial_get_table_name($field->entity_type, $field->bundle, $field->field_name)] = $table_schema;
+  }
+
+  // Return the schema of all the assistant tables (one per field instance).
+  return $schema;
+}
+
+/**
+ * Upgrade path.
+ *
+ * Switches from nids to uniqids.
+ */
+function serial_update_7130() {
+  module_load_include('inc', 'serial');
+
+  $table_schema = _serial_get_table_schema();
+
+  // Update the schema of old assistant tables.
+  foreach (_serial_get_all_fields() as $field) {
+    // Empty the table.
+    $table = _serial_get_table_name($field->entity_type, $field->bundle, $field->field_name);
+    db_delete($table)->execute();
+
+    // Drop nid field and key.
+    db_drop_field($table, 'nid');
+    db_drop_unique_key($table, 'nid');
+
+    // Add uniqid field and key.
+    db_add_field($table, 'uniqid', $table_schema['fields']['uniqid']);
+    db_add_unique_key($table, 'uniqid', array('uniqid'));
+  }
+}
+
+/**
+ * Add 'node_' to all existing serial tables.
+ *
+ * Change name:
+ *   from: serial_{content_type}_{field_name}
+ *   to: serial_node_{content_type}_{field_name}
+ */
+function serial_update_7131() {
+  // All old serial tables are of 'node' entity type.
+  foreach (db_find_tables('serial_%') as $table) {
+    db_rename_table($table, preg_replace('/^serial_/', 'serial_node_', $table));
+  }
+}
+
+/**
+ * Reorganize table names to prevent collisions with long names.
+ */
+function serial_update_7132() {
+  module_load_include('inc', 'serial');
+
+  foreach (db_find_tables('serial_%') as $table) {
+    // Explode by underscores and match old format.
+    list(, $entity_type, $bundle, $field_name) = explode('_', $table, 4);
+    db_rename_table($table, _serial_get_table_name($entity_type, $bundle, $field_name));
+  }
+}

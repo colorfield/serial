@@ -1,0 +1,198 @@
+<?php
+/**
+ * @file
+ * The Serial module main file.
+ */
+
+define('SERIAL_FIELD_TYPE', 'serial');
+
+/**
+ * Implements hook_field_info().
+ */
+function serial_field_info() {
+  return array(
+    SERIAL_FIELD_TYPE => array(
+      'label' => t('Serial'),
+      'description' => t('Auto increment serial field type.'),
+      // The "property_type" should be defined for accessing the
+      // field by entity metadata wrapper.
+      'property_type' => 'integer',
+      'default_widget' => 'serial_widget_default',
+      'default_formatter' => 'serial_formatter_default',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function serial_field_widget_info() {
+  return array(
+    'serial_widget_default' => array(
+      'label' => t('Hidden (Automatic)'),
+      'field types' => array(SERIAL_FIELD_TYPE),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function serial_field_formatter_info() {
+  return array(
+    'serial_formatter_default' => array(
+      'label' => t('Default'),
+      'field types' => array(SERIAL_FIELD_TYPE),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_create_instance().
+ */
+function serial_field_create_instance(array $instance) {
+  $field = field_read_field($instance['field_name']);
+
+  if (SERIAL_FIELD_TYPE === $field['type']) {
+    // Create the assistant table:
+    module_load_include('inc', 'serial');
+    _serial_create_table($field, $instance);
+
+    // Set serial values for old objects.
+    $old_count = _serial_init_old_entities($instance['entity_type'], $instance['bundle'], $field['field_name']);
+
+    if ($old_count > 0) {
+      drupal_set_message(t('Serial values have been automatically set for %count existing entities.', array(
+        '%count' => $old_count,
+      )));
+    }
+  }
+}
+
+/**
+ * Implements hook_field_delete_instance().
+ */
+function serial_field_delete_instance(array $instance) {
+  $field = field_read_field($instance['field_name']);
+
+  if (SERIAL_FIELD_TYPE == $field['type']) {
+    // Drop the assistant table.
+    module_load_include('inc', 'serial');
+    _serial_drop_table($field, $instance);
+  }
+}
+
+/**
+ * Implements hook_field_presave().
+ */
+function serial_field_presave($entity_type, $entity, array $field, array $instance, $langcode, array &$items) {
+  if (empty($items)) {
+    module_load_include('inc', 'serial');
+
+    $items[] = array(
+      'value' => _serial_generate_value($entity_type, $instance['bundle'], $field['field_name']),
+    );
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function serial_field_is_empty($item, $field) {
+  // Never should be treated as empty.
+  return empty($item['value']);
+}
+
+/**
+ * Implements hook_clone_node_alter().
+ */
+function serial_clone_node_alter(stdClass $node) {
+  // Reset values of all serial fields when cloning a node.
+  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
+    $info = field_info_field($field_name);
+
+    if ('serial' === $info['type']) {
+      $node->{$field_name} = array();
+    }
+  }
+}
+
+/**
+ * Implements hook_field_attach_rename_bundle().
+ */
+function serial_entity_bundle_rename($entity_type, $bundle_old, $bundle_new) {
+  if ($bundle_old !== $bundle_new) {
+    module_load_include('inc', 'serial');
+    _serial_rename_tables($entity_type, $bundle_old, $bundle_new);
+  }
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function serial_field_formatter_view($entity_type, $entity, array $field, array $instance, $langcode, array $items, array $display) {
+  $element = array();
+
+  // Define the field contents for the single default formatter.
+  foreach ($items as $delta => $item) {
+    // @FIXME
+// theme() has been renamed to _theme() and should NEVER be called directly.
+// Calling _theme() directly can alter the expected output and potentially
+// introduce security issues (see https://www.drupal.org/node/2195739). You
+// should use renderable arrays instead.
+// 
+// 
+// @see https://www.drupal.org/node/2195739
+// $element[$delta] = array(
+//       '#markup' => theme('serial_formatter_default', array(
+//         'serial_id' => $item['value'],
+//       )),
+//     );
+
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function serial_theme() {
+  // Register the theme for the default formatter.
+  return array(
+    'serial_formatter_default' => array(
+      'variables' => array(
+        'serial_id' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Theme function for the default formatter.
+ */
+function theme_serial_formatter_default(array $variables) {
+  return $variables['serial_id'];
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function serial_field_widget_form(
+  array &$form,
+  array &$form_state,
+  array $field,
+  array $instance,
+  $langcode,
+  array $items,
+  $delta,
+  array $element
+) {
+  $element['#type'] = 'hidden';
+
+  if (isset($items[$delta]['value'])) {
+    $element['#default_value'] = $items[$delta]['value'];
+  }
+
+  return array('value' => $element);
+}
