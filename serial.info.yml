@@ -1,10 +1,8 @@
 name: Serial
+type: module
 description: 'Defines atomic auto increment (serial) field type.'
-package: Field
-core: 8.x
+package: Field types
+# version: VERSION
+# core: 8.x
 dependencies:
   - field
-version: 7.x-1.7+1-dev
-project: serial
-datestamp: '1461616440'
-type: module

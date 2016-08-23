@@ -1,4 +1,5 @@
-<?php /**
+<?php
+/**
  * @file
  * Contains \Drupal\serial\Plugin\Field\FieldFormatter\SerialFormatterDefault.
  */
