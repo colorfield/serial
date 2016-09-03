@@ -6,7 +6,9 @@
 
 /**
  * Implements hook_field_schema().
+ * Replaced by SerialItem schema().
  */
+/*
 function serial_field_schema(array $field) {
   $columns = array();
 
@@ -25,6 +27,7 @@ function serial_field_schema(array $field) {
 
   return array('columns' => $columns);
 }
+*/
 
 /**
  * Implements hook_schema().

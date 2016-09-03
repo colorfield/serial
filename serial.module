@@ -8,7 +8,9 @@ define('SERIAL_FIELD_TYPE', 'serial');
 
 /**
  * Implements hook_field_info().
+ * Replaced by SerialItem annotations.
  */
+/*
 function serial_field_info() {
   return array(
     SERIAL_FIELD_TYPE => array(
@@ -22,6 +24,7 @@ function serial_field_info() {
     ),
   );
 }
+*/
 
 /**
  * Implements hook_field_widget_info().
@@ -97,11 +100,14 @@ function serial_field_presave($entity_type, $entity, array $field, array $instan
 
 /**
  * Implements hook_field_is_empty().
+ * Replaced by SerialItem isEmpty().
  */
+/*
 function serial_field_is_empty($item, $field) {
   // Never should be treated as empty.
   return empty($item['value']);
 }
+*/
 
 /**
  * Implements hook_clone_node_alter().
