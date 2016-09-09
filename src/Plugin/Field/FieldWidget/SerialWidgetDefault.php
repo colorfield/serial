@@ -1,29 +1,37 @@
-<?php /**
+<?php
+/**
  * @file
  * Contains \Drupal\serial\Plugin\Field\FieldWidget\SerialWidgetDefault.
  */
 
 namespace Drupal\serial\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
+ * Plugin implementation of the 'serial_default' widget.
+ *
  * @FieldWidget(
- *  id = "serial_widget_default",
- *  label = @Translation("Hidden (Automatic)"),
- *  field_types = {"SERIAL_FIELD_TYPE"}
+ *   id = "serial_default",
+ *   label = @Translation("Hidden (Automatic)"),
+ *   field_types = {
+ *     "serial"
+ *   }
  * )
  */
 class SerialWidgetDefault extends WidgetBase {
 
   /**
-   * @FIXME
-   * Move all logic relating to the serial_widget_default widget into this class.
-   * For more information, see:
-   *
-   * https://www.drupal.org/node/1796000
-   * https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Field%21WidgetInterface.php/interface/WidgetInterface/8
-   * https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Field%21WidgetBase.php/class/WidgetBase/8
+   * {@inheritdoc}
    */
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $element['value'] = array(
+      '#type' => 'hidden',
+      '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : NULL,
+    );
+    return $element;
+  }
 
 }

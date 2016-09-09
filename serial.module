@@ -28,7 +28,9 @@ function serial_field_info() {
 
 /**
  * Implements hook_field_widget_info().
+ * Reolaced by SerialWidgetDefault annotations.
  */
+/*
 function serial_field_widget_info() {
   return array(
     'serial_widget_default' => array(
@@ -37,6 +39,7 @@ function serial_field_widget_info() {
     ),
   );
 }
+*/
 
 /**
  * Implements hook_field_formatter_info().
@@ -183,7 +186,9 @@ function theme_serial_formatter_default(array $variables) {
 
 /**
  * Implements hook_field_widget_form().
+ * Replaced by SerialWidgetDefault formElement().
  */
+/*
 function serial_field_widget_form(
   array &$form,
   array &$form_state,
@@ -202,3 +207,4 @@ function serial_field_widget_form(
 
   return array('value' => $element);
 }
+*/
