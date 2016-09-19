@@ -41,9 +41,11 @@ function serial_field_widget_info() {
 }
 */
 
+
 /**
  * Implements hook_field_formatter_info().
  */
+/*
 function serial_field_formatter_info() {
   return array(
     'serial_formatter_default' => array(
@@ -52,6 +54,7 @@ function serial_field_formatter_info() {
     ),
   );
 }
+*/
 
 /**
  * Implements hook_field_create_instance().
@@ -134,33 +137,6 @@ function serial_entity_bundle_rename($entity_type, $bundle_old, $bundle_new) {
     module_load_include('inc', 'serial');
     _serial_rename_tables($entity_type, $bundle_old, $bundle_new);
   }
-}
-
-/**
- * Implements hook_field_formatter_view().
- */
-function serial_field_formatter_view($entity_type, $entity, array $field, array $instance, $langcode, array $items, array $display) {
-  $element = array();
-
-  // Define the field contents for the single default formatter.
-  foreach ($items as $delta => $item) {
-    // @FIXME
-// theme() has been renamed to _theme() and should NEVER be called directly.
-// Calling _theme() directly can alter the expected output and potentially
-// introduce security issues (see https://www.drupal.org/node/2195739). You
-// should use renderable arrays instead.
-// 
-// 
-// @see https://www.drupal.org/node/2195739
-// $element[$delta] = array(
-//       '#markup' => theme('serial_formatter_default', array(
-//         'serial_id' => $item['value'],
-//       )),
-//     );
-
-  }
-
-  return $element;
 }
 
 /**
