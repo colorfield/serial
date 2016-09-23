@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\serial\Plugin\Field\FieldType\SerialItem.
- */
-
 namespace Drupal\serial\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;
@@ -19,7 +14,7 @@ use Drupal\Core\TypedData\DataDefinition;
  *   label = @Translation("Serial"),
  *   description = @Translation("Auto increment serial field type."),
  *   default_widget = "serial_default",
- *   default_formatter = "serial_default"
+ *   default_formatter = "serial_formatter_default"
  * )
  */
 class SerialItem extends FieldItemBase {
@@ -32,11 +27,11 @@ class SerialItem extends FieldItemBase {
       'columns' => array(
         'value' => array(
           'type' => 'int',
-          'unsigned' => true,
-          'not null' => true,
-          'sortable' => true,
-          'views' => true,
-          'index' => true,
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'sortable' => TRUE,
+          'views' => TRUE,
+          'index' => TRUE,
         ),
       ),
     );
@@ -48,7 +43,7 @@ class SerialItem extends FieldItemBase {
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('integer')
       ->setLabel(t('Serial'))
-      ->setRequired(true);
+      ->setRequired(TRUE);
 
     return $properties;
   }
