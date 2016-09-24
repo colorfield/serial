@@ -8,6 +8,7 @@ use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Plugin implementation of the 'serial' field type.
+ * @todo should not be translatable, by default
  *
  * @FieldType(
  *   id = "serial",
@@ -74,8 +75,24 @@ class SerialItem extends FieldItemBase
    * @return int
    */
   private function getSerial() {
-    $serial = 1;
-    // @todo implement
+    // @todo use as a service
+    $serial = 0;
+    $entity = $this->getEntity();
+    // Does not applies if the node is not new.
+    if($entity->isNew()) {
+      // Let's start a first naive implementation
+      // by querying the amount of entities from this entity type + bundle.
+      $entity_type_id = $entity->getEntityTypeId(); // e.g. node
+      $entity_bundle = $entity->bundle(); // e.g. article
+      // @todo use DI / container
+      $query = \Drupal::entityQuery($entity_type_id);
+      $query->condition('type', $entity_bundle);
+      $result = $query->execute();
+      $serial = count($result) + 1;
+      // If we continue on the previous atomicity model, we will need the field instance
+      // @see https://github.com/r-daneelolivaw/serial/issues/2
+      //$field_definition = $this->getFieldDefinition();
+    }
     return $serial;
   }
 
