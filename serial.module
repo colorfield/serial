@@ -20,16 +20,6 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_field_formatter_info_alter().
- */
-/*
-function serial_field_formatter_info_alter(&$info) {
-  // @todo review integer / number
-  $info['integer']['field_types'][] = 'serial';
-}
-*/
-
-/**
  * Implements hook_theme().
  */
 function serial_theme() {
@@ -44,59 +34,21 @@ function theme_serial_default(array $variables) {
   return $variables['serial_id'];
 }
 
-/**
- * Implements hook_field_info().
- * Replaced by SerialItem annotations.
- */
-/*
-function serial_field_info() {
-  return array(
-    SERIAL_FIELD_TYPE => array(
-      'label' => t('Serial'),
-      'description' => t('Auto increment serial field type.'),
-      // The "property_type" should be defined for accessing the
-      // field by entity metadata wrapper.
-      'property_type' => 'integer',
-      'default_widget' => 'serial_widget_default',
-      'default_formatter' => 'serial_formatter_default',
-    ),
-  );
-}
-*/
 
 /**
- * Implements hook_field_widget_info().
- * Reolaced by SerialDefaultWidget annotations.
+ * Implements hook_field_formatter_info_alter().
  */
 /*
-function serial_field_widget_info() {
-  return array(
-    'serial_widget_default' => array(
-      'label' => t('Hidden (Automatic)'),
-      'field types' => array(SERIAL_FIELD_TYPE),
-    ),
-  );
-}
-*/
-
-
-/**
- * Implements hook_field_formatter_info().
- */
-/*
-function serial_field_formatter_info() {
-  return array(
-    'serial_formatter_default' => array(
-      'label' => t('Default'),
-      'field types' => array(SERIAL_FIELD_TYPE),
-    ),
-  );
+function serial_field_formatter_info_alter(&$info) {
+  // @todo review integer / number
+  $info['integer']['field_types'][] = 'serial';
 }
 */
 
 ///**
 // * Implements hook_field_create_instance().
 // */
+// @todo see https://github.com/r-daneelolivaw/serial/issues/10
 //function serial_field_create_instance(array $instance) {
 //  $field = field_read_field($instance['field_name']);
 //
@@ -142,17 +94,6 @@ function serial_field_formatter_info() {
 //  }
 //}
 
-/**
- * Implements hook_field_is_empty().
- * Replaced by SerialItem isEmpty().
- */
-/*
-function serial_field_is_empty($item, $field) {
-  // Never should be treated as empty.
-  return empty($item['value']);
-}
-*/
-
 ///**
 // * Implements hook_clone_node_alter().
 // */
@@ -166,38 +107,3 @@ function serial_field_is_empty($item, $field) {
 //    }
 //  }
 //}
-//
-///**
-// * Implements hook_field_attach_rename_bundle().
-// */
-//function serial_entity_bundle_rename($entity_type, $bundle_old, $bundle_new) {
-//  if ($bundle_old !== $bundle_new) {
-//    module_load_include('inc', 'serial');
-//    _serial_rename_tables($entity_type, $bundle_old, $bundle_new);
-//  }
-//}
-
-/**
- * Implements hook_field_widget_form().
- * Replaced by SerialDefaultWidget formElement().
- */
-/*
-function serial_field_widget_form(
-  array &$form,
-  array &$form_state,
-  array $field,
-  array $instance,
-  $langcode,
-  array $items,
-  $delta,
-  array $element
-) {
-  $element['#type'] = 'hidden';
-
-  if (isset($items[$delta]['value'])) {
-    $element['#default_value'] = $items[$delta]['value'];
-  }
-
-  return array('value' => $element);
-}
-*/
