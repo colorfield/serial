@@ -14,7 +14,7 @@ use Drupal\Core\TypedData\DataDefinition;
  *   label = @Translation("Serial"),
  *   description = @Translation("Auto increment serial field type."),
  *   default_widget = "serial_default",
- *   default_formatter = "serial_formatter_default"
+ *   default_formatter = "serial_default"
  * )
  */
 class SerialItem extends FieldItemBase {
