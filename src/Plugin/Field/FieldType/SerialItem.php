@@ -76,6 +76,7 @@ class SerialItem extends FieldItemBase
    */
   private function getSerial() {
     // @todo use as a service
+    // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
     $serial = 0;
     $entity = $this->getEntity();
     // Does not applies if the node is not new.
