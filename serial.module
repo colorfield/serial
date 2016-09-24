@@ -140,27 +140,6 @@ function serial_entity_bundle_rename($entity_type, $bundle_old, $bundle_new) {
 }
 
 /**
- * Implements hook_theme().
- */
-function serial_theme() {
-  // Register the theme for the default formatter.
-  return array(
-    'serial_formatter_default' => array(
-      'variables' => array(
-        'serial_id' => NULL,
-      ),
-    ),
-  );
-}
-
-/**
- * Theme function for the default formatter.
- */
-function theme_serial_formatter_default(array $variables) {
-  return $variables['serial_id'];
-}
-
-/**
  * Implements hook_field_widget_form().
  * Replaced by SerialWidgetDefault formElement().
  */
@@ -184,3 +163,24 @@ function serial_field_widget_form(
   return array('value' => $element);
 }
 */
+
+/**
+ * Implements hook_theme().
+ */
+function serial_theme() {
+    // Register the theme for the default formatter.
+    return array(
+        'serial_default' => array(
+            'variables' => array(
+                'serial_id' => NULL,
+            ),
+        ),
+    );
+}
+
+/**
+ * Theme function for the default formatter.
+ */
+function theme_serial_formatter_default(array $variables) {
+    return $variables['serial_id'];
+}
