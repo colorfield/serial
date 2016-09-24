@@ -13,8 +13,8 @@ use Drupal\Core\TypedData\DataDefinition;
  *   id = "serial",
  *   label = @Translation("Serial"),
  *   description = @Translation("Auto increment serial field type."),
- *   default_widget = "serial_default",
- *   default_formatter = "serial_default"
+ *   default_widget = "serial_default_widget",
+ *   default_formatter = "serial_default_formatter"
  * )
  */
 class SerialItem extends FieldItemBase {
@@ -41,10 +41,10 @@ class SerialItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
+    // @todo review DataDefinition methods : setReadOnly, setComputed, setRequired, setConstraints
     $properties['value'] = DataDefinition::create('integer')
       ->setLabel(t('Serial'))
       ->setRequired(TRUE);
-
     return $properties;
   }
 

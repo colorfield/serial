@@ -1,0 +1,12 @@
+# @see Configuration schema/metadata at https://drupal.org/node/1905070
+# @todo review configuration schema
+field.serial.value:
+  type: sequence
+  label: 'Default value'
+  sequence:
+    - type: mapping
+      label: 'Default'
+      mapping:
+        value:
+          type: integer
+          label: 'Value'

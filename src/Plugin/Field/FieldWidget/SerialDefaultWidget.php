@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\serial\Plugin\Field\FieldWidget\SerialWidgetDefault.
+ * Contains \Drupal\serial\Plugin\Field\FieldWidget\SerialDefaultWidget.
  */
 
 namespace Drupal\serial\Plugin\Field\FieldWidget;
@@ -14,22 +14,26 @@ use Drupal\Core\Form\FormStateInterface;
  * Plugin implementation of the 'serial_default' widget.
  *
  * @FieldWidget(
- *   id = "serial_default",
+ *   id = "serial_default_widget",
  *   label = @Translation("Hidden (Automatic)"),
  *   field_types = {
  *     "serial"
  *   }
  * )
  */
-class SerialWidgetDefault extends WidgetBase {
+class SerialDefaultWidget extends WidgetBase {
 
   /**
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element['value'] = array(
-      '#type' => 'hidden',
-      '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : NULL,
+      '#type' => 'hidden', // number
+      // default value cannot be NULL, throws 'This value should be of the correct primitive type'
+      // @see https://www.drupal.org/node/2220381
+      // the serial is initialized to 1
+      // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
+      '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : 1,
     );
     return $element;
   }

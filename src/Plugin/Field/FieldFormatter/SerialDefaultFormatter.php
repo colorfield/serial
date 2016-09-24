@@ -13,7 +13,7 @@ use Drupal\Core\Field\FieldItemListInterface;
  * Plugin implementation of the 'serial_default' formatter.
  *
  * @FieldFormatter(
- *   id = "serial_default",
+ *   id = "serial_default_formatter",
  *   label = @Translation("Serial default"),
  *   field_types = {
  *     "serial",
