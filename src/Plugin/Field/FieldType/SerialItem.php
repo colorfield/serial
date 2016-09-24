@@ -17,7 +17,8 @@ use Drupal\Core\TypedData\DataDefinition;
  *   default_formatter = "serial_default_formatter"
  * )
  */
-class SerialItem extends FieldItemBase {
+class SerialItem extends FieldItemBase
+{
 
   /**
    * {@inheritdoc}
@@ -32,7 +33,7 @@ class SerialItem extends FieldItemBase {
           'sortable' => TRUE,
           'views' => TRUE,
           'index' => TRUE,
-        ),
+          )
       ),
     );
   }
@@ -44,6 +45,7 @@ class SerialItem extends FieldItemBase {
     // @todo review DataDefinition methods : setReadOnly, setComputed, setRequired, setConstraints
     $properties['value'] = DataDefinition::create('integer')
       ->setLabel(t('Serial'))
+      ->setComputed(TRUE)
       ->setRequired(TRUE);
     return $properties;
   }
@@ -52,9 +54,29 @@ class SerialItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public function isEmpty() {
-    // Never should be treated as empty.
     $value = $this->get('value')->getValue();
-    return $value;
+    // For numbers, the field is empty if the value isn't numeric.
+    // But should never be treated as empty.
+    $empty = $value === NULL || !is_numeric($value);
+    return $empty;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSave() {
+    $value = $this->getSerial();
+    $this->setValue($value);
+  }
+
+  /**
+   * Gets the serial for this entity type, bundle, field instance.
+   * @return int
+   */
+  private function getSerial() {
+    $serial = 1;
+    // @todo implement
+    return $serial;
   }
 
 }
