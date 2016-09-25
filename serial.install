@@ -3,3 +3,22 @@
  * @file
  * Install, update and uninstall functions for the Serial module.
  */
+
+use Drupal\serial\SerialStorageInterface;
+
+/**
+ * Implements hook_schema().
+ */
+function serial_schema() {
+  /** @var SerialStorageInterface */
+  $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
+  $tableSchema = $serialStorage->getSchema();
+  $schema = array();
+
+  foreach ($serialStorage->getAllFields() as $field) {
+    $schema[$serialStorage->getStorageName($field->fieldDefinition, $field->entity)] = $tableSchema;
+  }
+
+  // Return the schema of all the assistant tables (one per field instance).
+  return $schema;
+}

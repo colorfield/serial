@@ -72,7 +72,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * @param $entity
    * @return string
    */
-  private function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // Remember about max length of MySQL tables - 64 symbols.
     // @todo Think about improvement for this.
     $tableName = 'serial_' . md5("{$entity->getEntityTypeId()}_{$entity->bundle()}_{$fieldDefinition->getName()}");
@@ -120,11 +120,52 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       // Return the new unique serial value.
       return $sid;
     }
+    // @todo use dedicated Exception
+    // https://www.drupal.org/node/608166
     catch (Exception $e) {
       $transaction->rollback();
       watchdog_exception('serial', $e);
       throw $e;
     }
+  }
+
+  /**
+   * Gets the schema of the assistant tables for generating serial values.
+   *
+   * @param null $tableDescription
+   * @return array
+   *   Assistant table schema.
+   */
+  public function getSchema($tableDescription = NULL) {
+    $schema = array(
+      'fields' => array(
+        'sid' => array(
+          // Serial Drupal DB type, not SerialStorageInterface::SERIAL_FIELD_TYPE
+          // means auto increment
+          // https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/8.2.x
+          'type' => 'serial',
+          'not null' => TRUE,
+          'unsigned' => TRUE,
+          'description' => 'The atomic serial field.',
+        ),
+        'uniqid' => array(
+          'type' => 'varchar',
+          'length' => 23,
+          'default' => '',
+          'not null' => TRUE,
+          // @todo review UUID instead
+          'description' => 'Unique temporary allocation Id.',
+        ),
+      ),
+      'primary key' => array('sid'),
+      'unique keys' => array(
+        'uniqid' => array('uniqid'),
+      ),
+    );
+    if(isset($description)) {
+      $schema['description'] =  $tableDescription;
+    }
+    return $schema;
   }
 
   /**
@@ -139,33 +180,10 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     if(!$dbSchema->tableExists($tableName)) {
       $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
       $tableDescription .= ', bundle ' . $entity->bundle();
-      $tableSchema = array(
-        'description' =>  $tableDescription,
-        'fields' => array(
-          'sid' => array(
-            // Serial Drupal DB type, not SerialStorageInterface::SERIAL_FIELD_TYPE
-            // means auto increment
-            // https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/8.2.x
-            'type' => 'serial',
-            'not null' => TRUE,
-            'unsigned' => TRUE,
-            'description' => 'The atomic serial field.',
-          ),
-          'uniqid' => array(
-            'type' => 'varchar',
-            'length' => 23,
-            'default' => '',
-            'not null' => TRUE,
-            // @todo review UUID instead
-            'description' => 'Unique temporary allocation Id.',
-          ),
-        ),
-        'primary key' => array('sid'),
-        'unique keys' => array(
-          'uniqid' => array('uniqid'),
-        ),
-      );
-      $dbSchema->createTable($tableName, $tableSchema);
+      $dbSchema->createTable($tableName, $this->getSchema($tableDescription));
+
+      // @todo review called here
+      $this->initOldEntries($fieldDefinition, $entity);
     }
   }
 
@@ -180,15 +198,64 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     $dbSchema->dropTable($this->getStorageName($fieldDefinition, $entity));
   }
 
+  /**
+   * Initializes the value of a new serial field in existing entities.
+   *
+   * @param FieldDefinitionInterface $fieldDefinition
+   * @param FieldableEntityInterface $entity
+   * @return int
+   */
   public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement initOldEntries() method.
+    /*
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', $entity_type)
+      ->fieldCondition($field_name);
+
+    // The "comment" entity type does not support bundle conditions.
+    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
+    if ('comment' !== $entity_type) {
+      $query->entityCondition('bundle', $bundle);
+    }
+
+    $results = $query->execute();
+
+    if (!empty($results[$entity_type])) {
+      foreach ($results[$entity_type] as $entity) {
+        list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
+
+        $entity = entity_load_unchanged($entity_type, $id);
+        $entity->{$field_name} = array(
+          LANGUAGE_NONE => array(
+            array(
+              'value' => _serial_generate_value($entity_type, $bundle, $field_name, FALSE),
+            ),
+          ),
+        );
+
+        field_attach_insert($entity_type, $entity);
+      }
+
+      return count($results[$entity_type]);
+    }
+
+    return 0;
+    */
   }
 
   public function renameStorage($entityType, $bundleOld, $bundleNew) {
     // TODO: Implement renameStorage() method.
   }
 
+  public function getAllFields() {
+    // TODO: Implement getAllFields() method.
+    // array of $field objects with $fieldDefinition and $entity props
+    return [];
+  }
+
+  /*
   public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement getFieldStorageName() method.
   }
+  */
 }

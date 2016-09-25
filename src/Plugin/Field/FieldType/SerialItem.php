@@ -89,7 +89,6 @@ class SerialItem extends FieldItemBase
       $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
       $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
 
-
       // @todo remove non atomic version left during module port
       // Let's start a first naive implementation
       // by querying the amount of entities from this entity type + bundle.

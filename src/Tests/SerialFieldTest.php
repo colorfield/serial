@@ -76,7 +76,7 @@ class SerialFieldTest extends WebTestBase {
       ))
       ->save();
 
-    // @todo write logic
+    // @todo implement logic from SerialTestCase
     // Display creation form.
     $this->drupalGet('node/add/article');
     $this->assertFieldByName("field_serial[0][value]", '1', 'Widget found.');

@@ -18,5 +18,7 @@ interface SerialStorageInterface {
   public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
   public function renameStorage($entityType, $bundleOld, $bundleNew);
   public function generateValue(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity, $delete);
-  public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+  public function getSchema();
+  public function getAllFields();
+  public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
 }
