@@ -1,5 +1,5 @@
 # @see Configuration schema/metadata at https://drupal.org/node/1905070
-# @todo review configuration schema
+# @todo review configuration schema for the value
 field.serial.value:
   type: sequence
   label: 'Default value'
@@ -10,3 +10,19 @@ field.serial.value:
         value:
           type: integer
           label: 'Value'
+
+field.formatter.settings.serial_default_formatter:
+  type: mapping
+  label: 'Serial default settings'
+  mapping:
+    title:
+      type: label
+      label: 'Serial default'
+
+#field.widget.settings.serial_default_widget:
+#  type: mapping
+#  label: 'Serial default settings'
+#  mapping:
+#    placeholder:
+#      type: label
+#      label: 'Placeholder'

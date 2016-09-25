@@ -79,7 +79,7 @@ class SerialItem extends FieldItemBase
     // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
     $serial = 0;
     $entity = $this->getEntity();
-    // Does not applies if the node is not new.
+    // Does not apply if the node is not new.
     if($entity->isNew()) {
       // Let's start a first naive implementation
       // by querying the amount of entities from this entity type + bundle.

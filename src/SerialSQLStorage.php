@@ -60,25 +60,15 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     );
   }
 
-  /**
-   * Fetches content type data.
-   * @param $contentType
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   */
-  public function getContentType($contentType)
-  {
-    return $this->entityTypeManager->getStorage('node_type')->load($contentType);
-  }
-
-  public function createStorage($field, $instance) {
+  public function createStorage($field, $entity) {
     // TODO: Implement createStorage() method.
   }
 
-  public function dropStorage($field, $instance) {
+  public function dropStorage($field, $entity) {
     // TODO: Implement dropStorage() method.
   }
 
-  public function initOldEntries($field, $instance) {
+  public function initOldEntries($field, $entity) {
     // TODO: Implement initOldEntries() method.
   }
 
@@ -86,7 +76,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     // TODO: Implement renameStorage() method.
   }
 
-  public function getFieldStorageName($field, $instance) {
+  public function getFieldStorageName($field, $entity) {
     // TODO: Implement getFieldStorageName() method.
   }
 }
