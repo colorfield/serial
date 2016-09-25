@@ -5,6 +5,7 @@ namespace Drupal\serial\Plugin\Field\FieldType;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
+use Drupal\serial\SerialStorageInterface;
 
 /**
  * Plugin implementation of the 'serial' field type.
@@ -75,17 +76,24 @@ class SerialItem extends FieldItemBase
    * @return int
    */
   private function getSerial() {
-    // @todo use as a service
     // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
-    $serial = 0;
+    $serial = null;
     $entity = $this->getEntity();
     // Does not apply if the node is not new.
     if($entity->isNew()) {
+      // @todo dependency injection
+      /** @var SerialStorageInterface */
+      $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
+
+      // @todo the create storage must be done on field instance creation
+      $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
+
+      /*
+      // @todo replace by serialStorage implementation
       // Let's start a first naive implementation
       // by querying the amount of entities from this entity type + bundle.
       $entity_type_id = $entity->getEntityTypeId(); // e.g. node
       $entity_bundle = $entity->bundle(); // e.g. article
-      // @todo use DI / container
       $query = \Drupal::entityQuery($entity_type_id);
       $query->condition('type', $entity_bundle);
       $result = $query->execute();
@@ -93,6 +101,7 @@ class SerialItem extends FieldItemBase
       // If we continue on the previous atomicity model, we will need the field instance
       // @see https://github.com/r-daneelolivaw/serial/issues/2
       //$field_definition = $this->getFieldDefinition();
+      */
     }
     return $serial;
   }

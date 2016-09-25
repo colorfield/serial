@@ -2,7 +2,7 @@
 
 namespace Drupal\serial;
 
-use Drupal\Core\Entity\ContentEntityStorageInterface;
+// use Drupal\Core\Entity\ContentEntityStorageInterface;
 
 /**
  * Defines an interface for node serial storage classes.
@@ -11,9 +11,10 @@ use Drupal\Core\Entity\ContentEntityStorageInterface;
  * @todo type casting
  */
 interface SerialStorageInterface {
-  public function createStorage($field, $entity);
-  public function dropStorage($field, $entity);
-  public function initOldEntries($field, $entity);
+  const SERIAL_FIELD_TYPE = 'serial';
+  public function createStorage($fieldDefinition, $entity);
+  public function dropStorage($fieldDefinition, $entity);
+  public function initOldEntries($fieldDefinition, $entity);
   public function renameStorage($entityType, $bundleOld, $bundleNew);
-  public function getFieldStorageName($field, $entity);
+  public function getFieldStorageName($fieldDefinition, $entity);
 }

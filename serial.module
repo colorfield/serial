@@ -5,6 +5,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\serial\SerialStorageInterface;
 
 /**
  * Implements hook_help().
@@ -40,7 +41,7 @@ function theme_serial_default(array $variables) {
  */
 function serial_field_formatter_info_alter(&$info) {
   // @todo review integer / number
-  $info['integer']['field_types'][] = 'serial';
+  $info['integer']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
 }
 
 ///**
