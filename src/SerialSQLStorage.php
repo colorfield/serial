@@ -14,7 +14,7 @@ use Drupal\Core\Entity\Query\QueryInterface;
  * Begin by the D7 implementation with SQL tables.
  * @todo review extends SqlContentEntityStorage
  */
-class Serial implements ContainerInjectionInterface, SerialStorageInterface
+class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface
 {
   /**
    * Drupal\Core\Database\Driver\mysql\Connection definition.

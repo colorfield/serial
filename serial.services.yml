@@ -1,4 +1,4 @@
 services:
-  serial.storage:
-    class:  Drupal\caius\SerialStorage
+  serial.sql_storage:
+    class:  Drupal\serial\SerialSQLStorage
     arguments: ['@database', '@entity.query', '@entity_type.manager']
