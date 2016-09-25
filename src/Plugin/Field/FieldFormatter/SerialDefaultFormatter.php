@@ -34,7 +34,7 @@ class SerialDefaultFormatter extends FormatterBase {
         '#serial_id' => $item->value,
       ];
       $elements[$delta] = [
-          '#markup' => \Drupal::service('renderer')->render($source),
+        '#markup' => \Drupal::service('renderer')->render($source),
       ];
     }
     return $elements;
