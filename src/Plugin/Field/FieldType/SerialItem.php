@@ -87,21 +87,18 @@ class SerialItem extends FieldItemBase
 
       // @todo the create storage must be done on field instance creation
       $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
+      $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
 
-      /*
-      // @todo replace by serialStorage implementation
+
+      // @todo remove non atomic version left during module port
       // Let's start a first naive implementation
       // by querying the amount of entities from this entity type + bundle.
-      $entity_type_id = $entity->getEntityTypeId(); // e.g. node
-      $entity_bundle = $entity->bundle(); // e.g. article
-      $query = \Drupal::entityQuery($entity_type_id);
-      $query->condition('type', $entity_bundle);
-      $result = $query->execute();
-      $serial = count($result) + 1;
-      // If we continue on the previous atomicity model, we will need the field instance
-      // @see https://github.com/r-daneelolivaw/serial/issues/2
-      //$field_definition = $this->getFieldDefinition();
-      */
+      //$entity_type_id = $entity->getEntityTypeId(); // e.g. node
+      //$entity_bundle = $entity->bundle(); // e.g. article
+      //$query = \Drupal::entityQuery($entity_type_id);
+      //$query->condition('type', $entity_bundle);
+      //$result = $query->execute();
+      //$serial = count($result) + 1;
     }
     return $serial;
   }
