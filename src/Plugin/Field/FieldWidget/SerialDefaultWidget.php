@@ -28,7 +28,7 @@ class SerialDefaultWidget extends WidgetBase {
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element['value'] = array(
-      '#type' => 'hidden', // understand number
+      '#type' => 'hidden', // understand number (integer)
       // Default value cannot be NULL, throws 'This value should be of the correct primitive type'
       // @see https://www.drupal.org/node/2220381
       // so the serial is defaulted to a positive int

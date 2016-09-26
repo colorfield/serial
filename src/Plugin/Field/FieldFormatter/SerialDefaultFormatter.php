@@ -10,13 +10,13 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
 
 /**
- * Plugin implementation of the 'serial_default' formatter.
+ * Plugin implementation of the 'serial_default_formatter'.
  *
  * @FieldFormatter(
  *   id = "serial_default_formatter",
  *   label = @Translation("Serial default"),
  *   field_types = {
- *     "serial",
+ *     "serial"
  *   },
  * )
  */

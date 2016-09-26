@@ -59,7 +59,7 @@ class SerialItem extends FieldItemBase
     $value = $this->get('value')->getValue();
     // For numbers, the field is empty if the value isn't numeric.
     // But should never be treated as empty.
-    $empty = $value === NULL || !is_numeric($value);
+    $empty = $value === NULL || !is_integer($value);
     return $empty;
   }
 
