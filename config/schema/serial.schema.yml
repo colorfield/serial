@@ -1,23 +1,23 @@
 # @see Configuration schema/metadata at https://drupal.org/node/1905070
 # @todo review configuration schema for the value
-#field.serial.value:
-#  type: sequence
-#  label: 'Default value'
-#  sequence:
-#    - type: mapping
-#      label: 'Default'
-#      mapping:
-#        value:
-#          type: integer
-#          label: 'Value'
+field.serial.value:
+  type: sequence
+  label: 'Default value'
+  sequence:
+    - type: mapping
+      label: 'Default'
+      mapping:
+        value:
+          type: integer
+          label: 'Value'
 
-#field.formatter.settings.serial_default_formatter:
-#  type: mapping
-#  label: 'Serial default settings'
-#  mapping:
-#    title:
-#      type: label
-#      label: 'Serial default'
+field.formatter.settings.serial_default_formatter:
+  type: mapping
+  label: 'Serial default settings'
+  mapping:
+    title:
+      type: label
+      label: 'Serial default'
 
 #field.widget.settings.serial_default_widget:
 #  type: mapping

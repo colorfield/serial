@@ -39,10 +39,10 @@ function theme_serial_default(array $variables) {
 /**
  * Implements hook_field_formatter_info_alter().
  */
-function serial_field_formatter_info_alter(array &$info) {
-  // @todo review integer / number
-  $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
-}
+//function serial_field_formatter_info_alter(array &$info) {
+  // @todo Review integer / number + SerialItem annotation.
+  //$info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
+//}
 
 ///**
 // * Implements hook_field_create_instance().

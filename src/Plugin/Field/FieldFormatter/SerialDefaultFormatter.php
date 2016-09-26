@@ -16,7 +16,7 @@ use Drupal\Core\Field\FieldItemListInterface;
  *   id = "serial_default_formatter",
  *   label = @Translation("Serial default"),
  *   field_types = {
- *     "serial"
+ *     "serial",
  *   },
  * )
  */
