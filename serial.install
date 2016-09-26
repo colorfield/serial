@@ -8,17 +8,19 @@ use Drupal\serial\SerialStorageInterface;
 
 /**
  * Implements hook_schema().
+ * Return the schema of all the assistant tables (one per field instance).
  */
 function serial_schema() {
   /** @var SerialStorageInterface */
   $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
   $tableSchema = $serialStorage->getSchema();
   $schema = array();
-
-  foreach ($serialStorage->getAllFields() as $field) {
-    $schema[$serialStorage->getStorageName($field->fieldDefinition, $field->entity)] = $tableSchema;
+  foreach($serialStorage->getAllFields() as $entityTypeId => $entry) {
+    foreach($entry as $fieldKey => $fieldInstance) {
+      foreach($fieldInstance['bundles'] as $bundle) {
+        $schema[$serialStorage->createTableName($entityTypeId, $bundle, $fieldKey)] = $tableSchema;
+      }
+    }
   }
-
-  // Return the schema of all the assistant tables (one per field instance).
   return $schema;
 }

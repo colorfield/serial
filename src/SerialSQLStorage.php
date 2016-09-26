@@ -73,9 +73,21 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * @return string
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+    return $this->createTableStorageName($entity->getEntityTypeId(), $entity->bundle(), $fieldDefinition->getName());
+  }
+
+  /**
+   * Creates the escaped table name.
+   *
+   * @param $entityTypeId
+   * @param $entityBundle
+   * @param $fieldName
+   * @return string
+   */
+  public function createTableStorageName($entityTypeId, $entityBundle, $fieldName) {
     // Remember about max length of MySQL tables - 64 symbols.
     // @todo Think about improvement for this.
-    $tableName = 'serial_' . md5("{$entity->getEntityTypeId()}_{$entity->bundle()}_{$fieldDefinition->getName()}");
+    $tableName = 'serial_' . md5("{$entityTypeId}_{$entityBundle}_{$fieldName}");
     return Database::getConnection()->escapeTable($tableName);
   }
 
@@ -182,7 +194,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       $tableDescription .= ', bundle ' . $entity->bundle();
       $dbSchema->createTable($tableName, $this->getSchema($tableDescription));
 
-      // @todo review called here
+      // @todo review if we should called this here.
       $this->initOldEntries($fieldDefinition, $entity);
     }
   }
@@ -207,21 +219,25 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    */
   public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement initOldEntries() method.
+//    $entity_type_id = $entity->getEntityTypeId(); // e.g. node
+//    $entity_bundle = $entity->bundle(); // e.g. article
+//    $query = \Drupal::entityQuery($entity_type_id)
+//          ->condition('field', $fieldDefinition->getName());
+//
+//    // @todo check this if the "comment" entity type still does not support bundle conditions.
+//    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
+//    if ('comment' !== $entity_type_id) {
+//      $query->condition('bundle', $entity_bundle);
+//    }
+//
+//    $result = $query->execute();
+//    foreach ($result as $entity) {
+//    }
+
+    // @todo section to port
     /*
-    $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', $entity_type)
-      ->fieldCondition($field_name);
-
-    // The "comment" entity type does not support bundle conditions.
-    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
-    if ('comment' !== $entity_type) {
-      $query->entityCondition('bundle', $bundle);
-    }
-
-    $results = $query->execute();
-
-    if (!empty($results[$entity_type])) {
-      foreach ($results[$entity_type] as $entity) {
+    if (!empty($result[$entity_type])) {
+      foreach ($result[$entity_type] as $entity) {
         list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
 
         $entity = entity_load_unchanged($entity_type, $id);
@@ -236,26 +252,33 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
         field_attach_insert($entity_type, $entity);
       }
 
-      return count($results[$entity_type]);
+      return count($result[$entity_type]);
     }
+    */
 
     return 0;
-    */
   }
 
   public function renameStorage($entityType, $bundleOld, $bundleNew) {
     // TODO: Implement renameStorage() method.
   }
 
+  /**
+   * Gets a lightweight map of fields across bundles filtered by field type.
+   *
+   * @return array
+   *   An array keyed by entity type. Each value is an array which keys are
+   *   field names and value is an array with two entries:
+   *   - type: The field type.
+   *   - bundles: An associative array of the bundles in which the field
+   *     appears, where the keys and values are both the bundle's machine name.
+   */
   public function getAllFields() {
-    // TODO: Implement getAllFields() method.
-    // array of $field objects with $fieldDefinition and $entity props
-    return [];
+    return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
   }
 
-  /*
-  public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  //public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement getFieldStorageName() method.
-  }
-  */
+    // not used anymore / removed from interface, to delete
+  //}
 }
