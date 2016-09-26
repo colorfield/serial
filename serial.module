@@ -6,7 +6,6 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\serial\SerialStorageInterface;
-use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_help().
@@ -41,25 +40,9 @@ function theme_serial_default(array $variables) {
  * Implements hook_field_formatter_info_alter().
  */
 //function serial_field_formatter_info_alter(array &$info) {
-  // @todo integer or number is needed but causes https://github.com/r-daneelolivaw/serial/issues/15
-  // text_default makes module totally unusable
-  //$info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
+// @todo Review integer / number + SerialItem annotation.
+//$info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
 //}
-
-/**
- * Implements hook_clone_node_alter().
- */
-function serial_clone_node_alter(Node $node) {
-  // @todo Reset values of all serial fields when cloning a node.
-  // @see https://github.com/r-daneelolivaw/serial/issues/17
-//  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
-//    $info = field_info_field($field_name);
-//
-//    if ('serial' === $info['type']) {
-//      $node->{$field_name} = array();
-//    }
-//  }
-}
 
 ///**
 // * Implements hook_field_create_instance().
@@ -94,5 +77,32 @@ function serial_clone_node_alter(Node $node) {
 //    // Drop the assistant table.
 //    module_load_include('inc', 'serial');
 //    _serial_drop_table($field, $instance);
+//  }
+//}
+//
+///**
+// * Implements hook_field_presave().
+// */
+//function serial_field_presave($entity_type, $entity, array $field, array $instance, $langcode, array &$items) {
+//  if (empty($items)) {
+//    module_load_include('inc', 'serial');
+//
+//    $items[] = array(
+//      'value' => _serial_generate_value($entity_type, $instance['bundle'], $field['field_name']),
+//    );
+//  }
+//}
+
+///**
+// * Implements hook_clone_node_alter().
+// */
+//function serial_clone_node_alter(stdClass $node) {
+//  // Reset values of all serial fields when cloning a node.
+//  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
+//    $info = field_info_field($field_name);
+//
+//    if ('serial' === $info['type']) {
+//      $node->{$field_name} = array();
+//    }
 //  }
 //}

@@ -189,7 +189,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     $dbSchema = Database::getConnection()->schema();
     $tableName = $this->getStorageName($fieldDefinition, $entity);
-    dsm($tableName);
     if(!$dbSchema->tableExists($tableName)) {
       $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
       $tableDescription .= ', bundle ' . $entity->bundle();
