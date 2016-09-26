@@ -1,0 +1,8 @@
+
+serial.default_controller_test:
+  path: '/serial/test'
+  defaults:
+    _controller: '\Drupal\serial\Controller\DefaultController::test'
+    _title: 'test'
+  requirements:
+    _permission: 'access content'

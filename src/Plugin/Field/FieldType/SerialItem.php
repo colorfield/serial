@@ -84,20 +84,9 @@ class SerialItem extends FieldItemBase
       // @todo dependency injection
       /** @var SerialStorageInterface */
       $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
-
       // @todo the create storage must be done on field instance creation
       $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
       $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
-
-      // @todo remove non atomic version left during module port
-      // Let's start a first naive implementation
-      // by querying the amount of entities from this entity type + bundle.
-      //$entity_type_id = $entity->getEntityTypeId(); // e.g. node
-      //$entity_bundle = $entity->bundle(); // e.g. article
-      //$query = \Drupal::entityQuery($entity_type_id);
-      //$query->condition('type', $entity_bundle);
-      //$result = $query->execute();
-      //$serial = count($result) + 1;
     }
     return $serial;
   }
