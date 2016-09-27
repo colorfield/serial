@@ -6,6 +6,8 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\serial\SerialStorageInterface;
+use Drupal\Core\TypedData\TranslatableInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
  * Plugin implementation of the 'serial' field type.
@@ -68,7 +70,9 @@ class SerialItem extends FieldItemBase
    */
   public function preSave() {
     $value = $this->getSerial();
-    $this->setValue($value);
+    if(isset($value)) {
+      $this->setValue($value);
+    }
   }
 
   /**
@@ -79,8 +83,24 @@ class SerialItem extends FieldItemBase
     // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
     $serial = null;
     $entity = $this->getEntity();
-    // Does not apply if the node is not new.
+    $newSerial = FALSE;
+
+    // Does not apply if the node is not new or translated.
     if($entity->isNew()) {
+      $newSerial = TRUE;
+    }else{
+      // Handle entity translation: fetch the same id or another one depending of what is the design.
+      // This should probably be solved by the end user decision when setting the field translation.
+      // @see https://github.com/r-daneelolivaw/serial/issues/14
+      // @todo dependency injection
+      /** @var LanguageManagerInterface */
+      $languageManager = \Drupal::getContainer()->get('language_manager');
+      if($languageManager->isMultilingual() && $entity instanceof TranslatableInterface) {
+        $newSerial = $entity->isNewTranslation();
+      }
+    }
+
+    if($newSerial) {
       // @todo dependency injection
       /** @var SerialStorageInterface */
       $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
@@ -88,6 +108,7 @@ class SerialItem extends FieldItemBase
       $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
       $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
     }
+
     return $serial;
   }
 
