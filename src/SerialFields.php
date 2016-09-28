@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\serial;
 
 /**
@@ -32,17 +33,16 @@ class SerialFields {
     foreach ($this->fields as $name => $data) {
       if (!db_table_exists("field_data_$name")) {
         // @FIXME
-// Fields and field instances are now exportable configuration entities, and
-// the Field Info API has been removed.
-// 
-// 
-// @see https://www.drupal.org/node/2012896
-// field_create_field($data + array(
-//           'default' => '',
-//           'not null' => TRUE,
-//           'field_name' => $name,
-//         ));
-
+        // Fields and field instances are now exportable configuration entities, and
+        // the Field Info API has been removed.
+        //
+        //
+        // @see https://www.drupal.org/node/2012896
+        // field_create_field($data + array(
+        //           'default' => '',
+        //           'not null' => TRUE,
+        //           'field_name' => $name,
+        //         ));
       }
     }
 
@@ -132,17 +132,16 @@ class SerialFields {
         }
 
         // @FIXME
-// Fields and field instances are now exportable configuration entities, and
-// the Field Info API has been removed.
-// 
-// 
-// @see https://www.drupal.org/node/2012896
-// field_create_instance($data + array(
-//           'bundle' => $bundle_name,
-//           'field_name' => $field_name,
-//           'entity_type' => $entity_type,
-//         ));
-
+        // Fields and field instances are now exportable configuration entities, and
+        // the Field Info API has been removed.
+        //
+        //
+        // @see https://www.drupal.org/node/2012896
+        // field_create_instance($data + array(
+        //           'bundle' => $bundle_name,
+        //           'field_name' => $field_name,
+        //           'entity_type' => $entity_type,
+        //         ));
       }
     }
 

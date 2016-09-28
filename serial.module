@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @file
  * The Serial module main file.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\serial\SerialStorageInterface;
 
 /**
  * Implements hook_help().
@@ -25,7 +25,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
  */
 function serial_theme() {
   // Register the theme for the serial default.
-  return array('serial_default' => array('variables' => array('serial_id' => NULL,),),);
+  return array('serial_default' => array('variables' => array('serial_id' => NULL)));
 }
 
 /**
@@ -35,20 +35,18 @@ function theme_serial_default(array $variables) {
   return $variables['serial_id'];
 }
 
-
 /**
  * Implements hook_field_formatter_info_alter().
  */
-//function serial_field_formatter_info_alter(array &$info) {
+// Function serial_field_formatter_info_alter(array &$info) {.
 //  @todo Review integer / number + SerialItem annotation.
 //  $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
-//}
-
-///**
+// }
+// **
 // * Implements hook_field_create_instance().
 // */
 // @todo see https://github.com/r-daneelolivaw/serial/issues/10
-//function serial_field_create_instance(array $instance) {
+// function serial_field_create_instance(array $instance) {
 //  $field = field_read_field($instance['field_name']);
 //
 //  if (SERIAL_FIELD_TYPE === $field['type']) {
@@ -65,12 +63,12 @@ function theme_serial_default(array $variables) {
 //      )));
 //    }
 //  }
-//}
+// }
 //
-///**
+// **
 // * Implements hook_field_delete_instance().
 // */
-//function serial_field_delete_instance(array $instance) {
+// function serial_field_delete_instance(array $instance) {
 //  $field = field_read_field($instance['field_name']);
 //
 //  if (SERIAL_FIELD_TYPE == $field['type']) {
@@ -78,12 +76,12 @@ function theme_serial_default(array $variables) {
 //    module_load_include('inc', 'serial');
 //    _serial_drop_table($field, $instance);
 //  }
-//}
+// }
 //
-///**
+// **
 // * Implements hook_clone_node_alter().
 // */
-//function serial_clone_node_alter(stdClass $node) {
+// function serial_clone_node_alter(stdClass $node) {
 //  // Reset values of all serial fields when cloning a node.
 //  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
 //    $info = field_info_field($field_name);
@@ -92,4 +90,4 @@ function theme_serial_default(array $variables) {
 //      $node->{$field_name} = array();
 //    }
 //  }
-//}
+// }

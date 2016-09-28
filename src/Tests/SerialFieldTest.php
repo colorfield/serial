@@ -21,7 +21,7 @@ class SerialFieldTest extends WebTestBase {
   public static $modules = array(
     'field',
     'node',
-    'serial'
+    'serial',
   );
 
   /**
@@ -31,6 +31,9 @@ class SerialFieldTest extends WebTestBase {
    */
   protected $webUser;
 
+  /**
+   *
+   */
   protected function setUp() {
     parent::setUp();
 
@@ -40,11 +43,10 @@ class SerialFieldTest extends WebTestBase {
   }
 
   // Test field.
-
   /**
    * Helper function for testSerialField().
    */
-  function testSerialField() {
+  public function testSerialField() {
 
     // Adds the serial field to the article content type.
     FieldStorageConfig::create(array(
@@ -63,8 +65,7 @@ class SerialFieldTest extends WebTestBase {
     entity_get_form_display('node', 'article', 'default')
       ->setComponent('field_serial', array(
         'type' => 'serial_default_widget',
-        'settings' => array(
-        ),
+        'settings' => array(),
       ))
       ->save();
 
@@ -82,8 +83,7 @@ class SerialFieldTest extends WebTestBase {
     $this->assertFieldByName("field_serial[0][value]", '1', 'Widget found.');
 
     // Test basic entry of serial field.
-    $edit = array(
-    );
+    $edit = array();
 
     $this->drupalPostForm('node/add/article', $edit, t('Save'));
     $this->assertRaw('1', 'Serial id ok');

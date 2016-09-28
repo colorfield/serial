@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\serial\Plugin\Field\FieldWidget\SerialDefaultWidget.
- */
 
 namespace Drupal\serial\Plugin\Field\FieldWidget;
 
@@ -28,10 +24,11 @@ class SerialDefaultWidget extends WidgetBase {
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element['value'] = array(
-      '#type' => 'hidden', // understand number (integer)
-      // Default value cannot be NULL, throws 'This value should be of the correct primitive type'
+    // Understand number (integer)
+      '#type' => 'hidden',
+      // Default value cannot be NULL, throws 'This value should be of the correct primitive type'.
       // @see https://www.drupal.org/node/2220381
-      // so the serial is defaulted to a positive int
+      // so the serial is defaulted to a positive int.
       '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : 1,
     );
     return $element;

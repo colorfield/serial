@@ -1,10 +1,9 @@
 <?php
+
 /**
  * @file
  * Install, update and uninstall functions for the Serial module.
  */
-
-use Drupal\serial\SerialStorageInterface;
 
 /**
  * Implements hook_schema().
@@ -15,9 +14,9 @@ function serial_schema() {
   $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
   $tableSchema = $serialStorage->getSchema();
   $schema = array();
-  foreach($serialStorage->getAllFields() as $entityTypeId => $entry) {
-    foreach($entry as $fieldKey => $fieldInstance) {
-      foreach($fieldInstance['bundles'] as $bundle) {
+  foreach ($serialStorage->getAllFields() as $entityTypeId => $entry) {
+    foreach ($entry as $fieldKey => $fieldInstance) {
+      foreach ($fieldInstance['bundles'] as $bundle) {
         $schema[$serialStorage->createTableName($entityTypeId, $bundle, $fieldKey)] = $tableSchema;
       }
     }

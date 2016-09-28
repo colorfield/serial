@@ -5,12 +5,11 @@ namespace Drupal\serial\Plugin\Field\FieldType;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\serial\SerialStorageInterface;
 use Drupal\Core\TypedData\TranslatableInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
 
 /**
  * Plugin implementation of the 'serial' field type.
+ *
  * @todo should not be translatable, by default
  *
  * @FieldType(
@@ -21,8 +20,7 @@ use Drupal\Core\Language\LanguageManagerInterface;
  *   default_formatter = "serial_default_formatter"
  * )
  */
-class SerialItem extends FieldItemBase
-{
+class SerialItem extends FieldItemBase {
 
   /**
    * {@inheritdoc}
@@ -37,7 +35,7 @@ class SerialItem extends FieldItemBase
           'sortable' => TRUE,
           'views' => TRUE,
           'index' => TRUE,
-          )
+        ),
       ),
     );
   }
@@ -70,37 +68,39 @@ class SerialItem extends FieldItemBase
    */
   public function preSave() {
     $value = $this->getSerial();
-    if(isset($value)) {
+    if (isset($value)) {
       $this->setValue($value);
     }
   }
 
   /**
    * Gets the serial for this entity type, bundle, field instance.
+   *
    * @return int
    */
   private function getSerial() {
     // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
-    $serial = null;
+    $serial = NULL;
     $entity = $this->getEntity();
     $newSerial = FALSE;
 
     // Does not apply if the node is not new or translated.
-    if($entity->isNew()) {
+    if ($entity->isNew()) {
       $newSerial = TRUE;
-    }else{
+    }
+    else {
       // Handle entity translation: fetch the same id or another one depending of what is the design.
       // This should probably be solved by the end user decision when setting the field translation.
       // @see https://github.com/r-daneelolivaw/serial/issues/14
       // @todo dependency injection
       /** @var LanguageManagerInterface */
       $languageManager = \Drupal::getContainer()->get('language_manager');
-      if($languageManager->isMultilingual() && $entity instanceof TranslatableInterface) {
+      if ($languageManager->isMultilingual() && $entity instanceof TranslatableInterface) {
         $newSerial = $entity->isNewTranslation();
       }
     }
 
-    if($newSerial) {
+    if ($newSerial) {
       // @todo dependency injection
       /** @var SerialStorageInterface */
       $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');

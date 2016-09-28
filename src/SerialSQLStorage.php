@@ -10,19 +10,19 @@ use Drupal\Core\Database\Database;
 use Drupal\Core\Database\Driver\mysql\Connection;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryFactory;
-use Drupal\Core\Entity\Query\QueryInterface;
 
 /**
  * Serial storage service definition.
  * Begin by the D7 implementation with SQL tables.
+ *
  * @todo review extends SqlContentEntityStorage
  * @todo remove unused dependencies
  * @todo use DI for database, resolve SQL agnostic driver first
  */
-class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface
-{
+class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface {
   /**
    * Drupal\Core\Database\Driver\mysql\Connection definition.
+   *
    * @todo review driver
    * @var Drupal\Core\Database\Driver\mysql\Connection
    */
@@ -56,8 +56,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
       $container->get('entity.query'),
@@ -70,6 +69,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    *
    * @param $field
    * @param $entity
+   *
    * @return string
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
@@ -82,6 +82,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * @param $entityTypeId
    * @param $entityBundle
    * @param $fieldName
+   *
    * @return string
    */
   public function createTableStorageName($entityTypeId, $entityBundle, $fieldName) {
@@ -97,7 +98,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * @param FieldDefinitionInterface $fieldDefinition
    * @param FieldableEntityInterface $entity
    * @param bool $delete
-   *  Indicates if temporary records should be deleted.
+   *   Indicates if temporary records should be deleted.
    *
    * @return \Drupal\Core\Database\StatementInterface|int|null
    *
@@ -145,6 +146,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * Gets the schema of the assistant tables for generating serial values.
    *
    * @param null $tableDescription
+   *
    * @return array
    *   Assistant table schema.
    */
@@ -174,8 +176,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
         'uniqid' => array('uniqid'),
       ),
     );
-    if(isset($description)) {
-      $schema['description'] =  $tableDescription;
+    if (isset($description)) {
+      $schema['description'] = $tableDescription;
     }
     return $schema;
   }
@@ -189,7 +191,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     $dbSchema = Database::getConnection()->schema();
     $tableName = $this->getStorageName($fieldDefinition, $entity);
-    if(!$dbSchema->tableExists($tableName)) {
+    if (!$dbSchema->tableExists($tableName)) {
       $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
       $tableDescription .= ', bundle ' . $entity->bundle();
       $dbSchema->createTable($tableName, $this->getSchema($tableDescription));
@@ -215,50 +217,53 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    *
    * @param FieldDefinitionInterface $fieldDefinition
    * @param FieldableEntityInterface $entity
+   *
    * @return int
    */
   public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement initOldEntries() method.
-//    $entity_type_id = $entity->getEntityTypeId(); // e.g. node
-//    $entity_bundle = $entity->bundle(); // e.g. article
-//    $query = \Drupal::entityQuery($entity_type_id)
-//          ->condition('field', $fieldDefinition->getName());
-//
-//    // @todo check this if the "comment" entity type still does not support bundle conditions.
-//    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
-//    if ('comment' !== $entity_type_id) {
-//      $query->condition('bundle', $entity_bundle);
-//    }
-//
-//    $result = $query->execute();
-//    foreach ($result as $entity) {
-//    }
-
+    //    $entity_type_id = $entity->getEntityTypeId(); // e.g. node
+    //    $entity_bundle = $entity->bundle(); // e.g. article
+    //    $query = \Drupal::entityQuery($entity_type_id)
+    //          ->condition('field', $fieldDefinition->getName());
+    //
+    //    // @todo check this if the "comment" entity type still does not support bundle conditions.
+    //    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
+    //    if ('comment' !== $entity_type_id) {
+    //      $query->condition('bundle', $entity_bundle);
+    //    }
+    //
+    //    $result = $query->execute();
+    //    foreach ($result as $entity) {
+    //    }.
     // @todo section to port
     /*
     if (!empty($result[$entity_type])) {
-      foreach ($result[$entity_type] as $entity) {
-        list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
+    foreach ($result[$entity_type] as $entity) {
+    list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
 
-        $entity = entity_load_unchanged($entity_type, $id);
-        $entity->{$field_name} = array(
-          LANGUAGE_NONE => array(
-            array(
-              'value' => _serial_generate_value($entity_type, $bundle, $field_name, FALSE),
-            ),
-          ),
-        );
+    $entity = entity_load_unchanged($entity_type, $id);
+    $entity->{$field_name} = array(
+    LANGUAGE_NONE => array(
+    array(
+    'value' => _serial_generate_value($entity_type, $bundle, $field_name, FALSE),
+    ),
+    ),
+    );
 
-        field_attach_insert($entity_type, $entity);
-      }
-
-      return count($result[$entity_type]);
+    field_attach_insert($entity_type, $entity);
     }
-    */
+
+    return count($result[$entity_type]);
+    }
+     */
 
     return 0;
   }
 
+  /**
+   *
+   */
   public function renameStorage($entityType, $bundleOld, $bundleNew) {
     // TODO: Implement renameStorage() method.
   }
@@ -277,8 +282,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
   }
 
-  //public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    // TODO: Implement getFieldStorageName() method.
-    // not used anymore / removed from interface, to delete
-  //}
+  // Public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  // TODO: Implement getFieldStorageName() method.
+  // not used anymore / removed from interface, to delete
+  // }.
 }

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\serial\Plugin\field\formatter\SerialDefaultFormatter.
- */
 
 namespace Drupal\serial\Plugin\Field\FieldFormatter;
 
