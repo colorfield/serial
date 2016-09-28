@@ -81,19 +81,6 @@ function theme_serial_default(array $variables) {
 //}
 //
 ///**
-// * Implements hook_field_presave().
-// */
-//function serial_field_presave($entity_type, $entity, array $field, array $instance, $langcode, array &$items) {
-//  if (empty($items)) {
-//    module_load_include('inc', 'serial');
-//
-//    $items[] = array(
-//      'value' => _serial_generate_value($entity_type, $instance['bundle'], $field['field_name']),
-//    );
-//  }
-//}
-
-///**
 // * Implements hook_clone_node_alter().
 // */
 //function serial_clone_node_alter(stdClass $node) {
