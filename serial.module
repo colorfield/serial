@@ -30,6 +30,9 @@ function serial_theme() {
 
 /**
  * Theme function for the serial default.
+ *
+ * @param array $variables
+ * @return mixed
  */
 function theme_serial_default(array $variables) {
   return $variables['serial_id'];

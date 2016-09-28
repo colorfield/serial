@@ -13,8 +13,8 @@ use Drupal\Core\Entity\Query\QueryFactory;
 
 /**
  * Serial storage service definition.
- * Begin by the D7 implementation with SQL tables.
  *
+ * Begin by the D7 implementation with SQL tables.
  * @todo review extends SqlContentEntityStorage
  * @todo remove unused dependencies
  * @todo use DI for database, resolve SQL agnostic driver first
@@ -65,12 +65,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Gets the name of the assistant table for a specific field.
-   *
-   * @param $field
-   * @param $entity
-   *
-   * @return string
+   * {@inheritdoc}
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     return $this->createTableStorageName($entity->getEntityTypeId(), $entity->bundle(), $fieldDefinition->getName());
@@ -93,16 +88,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Generates a unique serial value (unique per entity bundle).
-   *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
-   * @param bool $delete
-   *   Indicates if temporary records should be deleted.
-   *
-   * @return \Drupal\Core\Database\StatementInterface|int|null
-   *
-   * @throws \Exception
+   * {@inheritdoc}
    */
   public function generateValue(FieldDefinitionInterface $fieldDefinition,
                                 FieldableEntityInterface $entity,
@@ -143,12 +129,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Gets the schema of the assistant tables for generating serial values.
-   *
-   * @param null $tableDescription
-   *
-   * @return array
-   *   Assistant table schema.
+   * {@inheritdoc}
    */
   public function getSchema($tableDescription = NULL) {
     $schema = array(
@@ -183,10 +164,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Creates an assistant serial table for a new created field.
-   *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
+   * {@inheritdoc}
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     $dbSchema = Database::getConnection()->schema();
@@ -202,10 +180,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Drops an assistant serial table for a deleted field.
-   *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
+   * {@inheritdoc}
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     $dbSchema = Database::getConnection()->schema();
@@ -213,12 +188,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Initializes the value of a new serial field in existing entities.
-   *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
-   *
-   * @return int
+   * {@inheritdoc}
    */
   public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     // TODO: Implement initOldEntries() method.
@@ -262,21 +232,14 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function renameStorage($entityType, $bundleOld, $bundleNew) {
     // TODO: Implement renameStorage() method.
   }
 
   /**
-   * Gets a lightweight map of fields across bundles filtered by field type.
-   *
-   * @return array
-   *   An array keyed by entity type. Each value is an array which keys are
-   *   field names and value is an array with two entries:
-   *   - type: The field type.
-   *   - bundles: An associative array of the bundles in which the field
-   *     appears, where the keys and values are both the bundle's machine name.
+   * {@inheritdoc}
    */
   public function getAllFields() {
     return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);

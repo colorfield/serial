@@ -5,8 +5,11 @@
  * Install, update and uninstall functions for the Serial module.
  */
 
+use Drupal\serial\SerialStorageInterface;
+
 /**
  * Implements hook_schema().
+ *
  * Return the schema of all the assistant tables (one per field instance).
  */
 function serial_schema() {

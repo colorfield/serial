@@ -6,6 +6,9 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\TranslatableInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\serial\SerialStorageInterface;
+
 
 /**
  * Plugin implementation of the 'serial' field type.
@@ -77,6 +80,7 @@ class SerialItem extends FieldItemBase {
    * Gets the serial for this entity type, bundle, field instance.
    *
    * @return int
+   *   serial id
    */
   private function getSerial() {
     // @todo review, it should make sense to define a starting autoincrement (e.g. history from an invoice system)
@@ -89,12 +93,15 @@ class SerialItem extends FieldItemBase {
       $newSerial = TRUE;
     }
     else {
-      // Handle entity translation: fetch the same id or another one depending of what is the design.
-      // This should probably be solved by the end user decision when setting the field translation.
+      // Handle entity translation: fetch the same id or another one
+      // depending of what is the design.
+      // This should probably be solved by the end user decision
+      // while setting the field translation.
       // @see https://github.com/r-daneelolivaw/serial/issues/14
       // @todo dependency injection
       /** @var LanguageManagerInterface */
       $languageManager = \Drupal::getContainer()->get('language_manager');
+      // @todo isMultilingual is global, prefer local hasTranslation
       if ($languageManager->isMultilingual() && $entity instanceof TranslatableInterface) {
         $newSerial = $entity->isNewTranslation();
       }
