@@ -34,12 +34,13 @@ interface SerialStorageInterface {
   /**
    * Initializes the value of a new serial field in existing entities.
    *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
+   * @param $entityTypeId
+   * @param $entityBundle
+   * @param $fieldName
    *
    * @return int
    */
-  public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+  public function initOldEntries($entityTypeId, $entityBundle, $fieldName);
 
   /**
    * Renames the storage, after a bundle rename.

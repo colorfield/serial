@@ -68,7 +68,11 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    return $this->createTableStorageName($entity->getEntityTypeId(), $entity->bundle(), $fieldDefinition->getName());
+    return $this->createTableStorageName(
+      $entity->getEntityTypeId(),
+      $entity->bundle(),
+      $fieldDefinition->getName()
+    );
   }
 
   /**
@@ -167,15 +171,22 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $dbSchema = Database::getConnection()->schema();
     $tableName = $this->getStorageName($fieldDefinition, $entity);
-    if (!$dbSchema->tableExists($tableName)) {
-      $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
-      $tableDescription .= ', bundle ' . $entity->bundle();
-      $dbSchema->createTable($tableName, $this->getSchema($tableDescription));
+    $this->createStorageFromName($tableName);
+  }
 
-      // @todo review if we should called this here.
-      $this->initOldEntries($fieldDefinition, $entity);
+  /**
+   * @todo description.
+   * @todo class refactoring needed to get something consistent with method signatures / facade.
+   * @param $storageName
+   */
+  public function createStorageFromName($storageName) {
+    $dbSchema = Database::getConnection()->schema();
+    if (!$dbSchema->tableExists($storageName)) {
+      //$tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
+      //$tableDescription .= ', bundle ' . $entity->bundle();
+      //$dbSchema->createTable($storageName, $this->getSchema($tableDescription));
+      $dbSchema->createTable($storageName, $this->getSchema());
     }
   }
 
@@ -183,29 +194,38 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+    $this->dropStorageFromName($this->getStorageName($fieldDefinition, $entity));
+  }
+
+  /**
+   * @todo description.
+   * @todo class refactoring needed to get something consistent with method signatures / facade.
+   * @param $storageName
+   */
+  public function dropStorageFromName($storageName) {
     $dbSchema = Database::getConnection()->schema();
-    $dbSchema->dropTable($this->getStorageName($fieldDefinition, $entity));
+    $dbSchema->dropTable($storageName);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function initOldEntries(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  public function initOldEntries($entityTypeId, $entityBundle, $fieldName) {
     // TODO: Implement initOldEntries() method.
-    //    $entity_type_id = $entity->getEntityTypeId(); // e.g. node
-    //    $entity_bundle = $entity->bundle(); // e.g. article
-    //    $query = \Drupal::entityQuery($entity_type_id)
-    //          ->condition('field', $fieldDefinition->getName());
-    //
-    //    // @todo check this if the "comment" entity type still does not support bundle conditions.
-    //    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
-    //    if ('comment' !== $entity_type_id) {
-    //      $query->condition('bundle', $entity_bundle);
-    //    }
-    //
-    //    $result = $query->execute();
-    //    foreach ($result as $entity) {
-    //    }.
+    $query = \Drupal::entityQuery($entityTypeId)
+                ->condition('field', $fieldName);
+
+    // @todo check this if the "comment" entity type still does not support bundle conditions.
+    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
+    if ('comment' !== $entityTypeId) {
+      $query->condition('bundle', $entityBundle);
+    }
+
+    $result = $query->execute();
+    foreach ($result as $entity) {
+
+    }
+
     // @todo section to port
     /*
     if (!empty($result[$entity_type])) {
