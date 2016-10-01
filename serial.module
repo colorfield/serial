@@ -7,7 +7,6 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Implements hook_help().
@@ -31,36 +30,16 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 // }
 
 /**
- * Implements hook_theme().
- */
-function serial_theme() {
-  // Register the theme for the serial default.
-  return array('serial_default' => array('variables' => array('serial_id' => NULL)));
-}
-
-/**
- * Theme function for the serial default.
- *
- * @param array $variables
- * @return mixed
- */
-function theme_serial_default(array $variables) {
-  return $variables['serial_id'];
-}
-
-/**
  * Implements hook_ENTITY_TYPE_create().
  *
  * For "field_config".
  */
 function serial_field_config_create(FieldConfig $field) {
   if ($field->getType() == 'serial' && !$field->isSyncing()) {
-    drupal_set_message('serial_field_config_create');
-
-    // Create the assistant table:
+    // Create the assistant storage.
     /** @var SerialStorageInterface */
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
-    $storageName = $serialStorage->createTableStorageName(
+    $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
       $field->getTargetBundle(),
       $field->getFieldStorageDefinition()->getName()
@@ -90,7 +69,7 @@ function serial_field_config_create(FieldConfig $field) {
 function serial_field_config_delete(FieldConfig $field) {
   if ($field->getType() == 'serial') {
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
-    $storageName = $serialStorage->createTableStorageName(
+    $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
       $field->getTargetBundle(),
       $field->getFieldStorageDefinition()->getName()
@@ -124,3 +103,21 @@ function serial_field_config_delete(FieldConfig $field) {
 //    }
 //  }
 // }
+
+/**
+ * Implements hook_theme().
+ */
+function serial_theme() {
+  // Register the theme for the serial default.
+  return array('serial_default' => array('variables' => array('serial_id' => NULL)));
+}
+
+/**
+ * Theme function for the serial default.
+ *
+ * @param array $variables
+ * @return mixed
+ */
+function theme_serial_default(array $variables) {
+  return $variables['serial_id'];
+}

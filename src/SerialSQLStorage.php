@@ -68,7 +68,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    return $this->createTableStorageName(
+    return $this->createStorageName(
       $entity->getEntityTypeId(),
       $entity->bundle(),
       $fieldDefinition->getName()
@@ -84,7 +84,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    *
    * @return string
    */
-  public function createTableStorageName($entityTypeId, $entityBundle, $fieldName) {
+  public function createStorageName($entityTypeId, $entityBundle, $fieldName) {
     // Remember about max length of MySQL tables - 64 symbols.
     // @todo Think about improvement for this.
     $tableName = 'serial_' . md5("{$entityTypeId}_{$entityBundle}_{$fieldName}");
@@ -92,21 +92,23 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * {@inheritdoc}
+   * @todo description
+   * @todo refactoring
+   *
+   * @param $storageName
+   * @param $delete
+   * @return \Drupal\Core\Database\StatementInterface|int|null
+   * @throws \Exception
    */
-  public function generateValue(FieldDefinitionInterface $fieldDefinition,
-                                FieldableEntityInterface $entity,
-                                $delete = TRUE) {
+  public function generateValueFromName($storageName, $delete = TRUE){
     $connection = Database::getConnection();
     // @todo review https://api.drupal.org/api/drupal/core%21includes%21database.inc/function/db_transaction/8.2.x
     $transaction = $connection->startTransaction();
 
     try {
-      // Get the name of the relevant table.
-      $tableName = $this->getStorageName($fieldDefinition, $entity);
       // Insert a temporary record to get a new unique serial value.
       $uniqid = uniqid('', TRUE);
-      $sid = $connection->insert($tableName)
+      $sid = $connection->insert($storageName)
         ->fields(array('uniqid' => $uniqid))
         ->execute();
 
@@ -115,7 +117,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
 
       // Delete the temporary record.
       if ($delete && $sid && ($sid % 10) == 0) {
-        $connection->delete($tableName)
+        $connection->delete($storageName)
           ->condition('sid', $sid, '<')
           ->execute();
       }
@@ -123,13 +125,23 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       // Return the new unique serial value.
       return $sid;
     }
-    // @todo use dedicated Exception
-    // https://www.drupal.org/node/608166
+      // @todo use dedicated Exception
+      // https://www.drupal.org/node/608166
     catch (Exception $e) {
       $transaction->rollback();
       watchdog_exception('serial', $e);
       throw $e;
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function generateValue(FieldDefinitionInterface $fieldDefinition,
+                                FieldableEntityInterface $entity,
+                                $delete = TRUE) {
+    $storageName = $this->getStorageName($fieldDefinition, $entity);
+    return $this->generateValueFromName($storageName, $delete);
   }
 
   /**
@@ -171,8 +183,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $tableName = $this->getStorageName($fieldDefinition, $entity);
-    $this->createStorageFromName($tableName);
+    $storageName = $this->getStorageName($fieldDefinition, $entity);
+    $this->createStorageFromName($storageName);
   }
 
   /**
@@ -211,44 +223,32 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function initOldEntries($entityTypeId, $entityBundle, $fieldName) {
-    // TODO: Implement initOldEntries() method.
-    $query = \Drupal::entityQuery($entityTypeId)
-                ->condition('field', $fieldName);
+    $query = $this->entityQuery->get($entityTypeId);
+    // @todo shall we assign serial id to unpublished as well?
+    //$query->condition('status', 1);
+    $query->condition('type', $entityBundle);
+    $entityIds = $query->execute();
 
-    // @todo check this if the "comment" entity type still does not support bundle conditions.
-    // @see https://api.drupal.org/api/drupal/includes!entity.inc/function/EntityFieldQuery%3A%3AentityCondition/7
-    if ('comment' !== $entityTypeId) {
-      $query->condition('bundle', $entityBundle);
-    }
-
-    $result = $query->execute();
-    foreach ($result as $entity) {
-
-    }
-
-    // @todo section to port
-    /*
-    if (!empty($result[$entity_type])) {
-    foreach ($result[$entity_type] as $entity) {
-    list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
-
-    $entity = entity_load_unchanged($entity_type, $id);
-    $entity->{$field_name} = array(
-    LANGUAGE_NONE => array(
-    array(
-    'value' => _serial_generate_value($entity_type, $bundle, $field_name, FALSE),
-    ),
-    ),
+    $updated = 0;
+    $storageName = $this->createStorageName(
+      $entityTypeId,
+      $entityBundle,
+      $fieldName
     );
 
-    field_attach_insert($entity_type, $entity);
+    foreach ($entityIds as $entityId) {
+      $entity = $this->entityTypeManager
+        ->getStorage($entityTypeId)
+        ->loadUnchanged($entityId);
+      $serial = $this->generateValueFromName($storageName);
+      // @todo review multilingual
+      $entity->{$fieldName}->und[0]->value = $serial;
+      if($entity->save() === SAVED_UPDATED) {
+        ++$updated;
+      }
     }
 
-    return count($result[$entity_type]);
-    }
-     */
-
-    return 0;
+    return $updated;
   }
 
   /**
@@ -265,8 +265,4 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
   }
 
-  // Public function getFieldStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-  // TODO: Implement getFieldStorageName() method.
-  // not used anymore / removed from interface, to delete
-  // }.
 }

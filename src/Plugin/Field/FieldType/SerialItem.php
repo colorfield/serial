@@ -111,8 +111,6 @@ class SerialItem extends FieldItemBase {
       // @todo dependency injection
       /** @var SerialStorageInterface */
       $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
-      // @todo the create storage must be done on field instance creation
-      $serialStorage->createStorage($this->getFieldDefinition(), $this->getEntity());
       $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
     }
 
