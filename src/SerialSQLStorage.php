@@ -7,7 +7,6 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Database\Database;
-use Drupal\Core\Database\Driver\mysql\Connection;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryFactory;
 
@@ -20,13 +19,6 @@ use Drupal\Core\Entity\Query\QueryFactory;
  * @todo use DI for database, resolve SQL agnostic driver first
  */
 class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface {
-  /**
-   * Drupal\Core\Database\Driver\mysql\Connection definition.
-   *
-   * @todo review driver
-   * @var Drupal\Core\Database\Driver\mysql\Connection
-   */
-  protected $database;
 
   /**
    * Drupal\Core\Entity\Query\QueryInterface definition.
@@ -45,10 +37,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function __construct(Connection $database,
-                              QueryFactory $entityQuery,
+  public function __construct(QueryFactory $entityQuery,
                               EntityTypeManager $entityTypeManager) {
-    $this->database = $database;
     $this->entityQuery = $entityQuery;
     $this->entityTypeManager = $entityTypeManager;
   }
@@ -58,7 +48,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('database'),
       $container->get('entity.query'),
       $container->get('entity_type.manager')
     );
