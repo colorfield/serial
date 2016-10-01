@@ -5,8 +5,6 @@
  * Install, update and uninstall functions for the Serial module.
  */
 
-use Drupal\serial\SerialStorageInterface;
-
 /**
  * Implements hook_schema().
  *

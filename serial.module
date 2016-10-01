@@ -27,13 +27,13 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 // Function serial_field_formatter_info_alter(array &$info) {.
 //  @todo Review integer / number + SerialItem annotation.
 //  $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
-// }
-
+// }.
 /**
  * Implements hook_ENTITY_TYPE_create().
  *
  * For "field_config".
  */
+
 function serial_field_config_create(FieldConfig $field) {
   if ($field->getType() == 'serial' && !$field->isSyncing() && !$field->isDeleted()) {
     // Create the assistant storage.
@@ -55,7 +55,7 @@ function serial_field_config_create(FieldConfig $field) {
 
     if ($oldCount > 0) {
       drupal_set_message(t('Serial values have been automatically set for %count existing entities.', array(
-       '%count' => $oldCount,
+        '%count' => $oldCount,
       )));
     }
   }
@@ -84,13 +84,12 @@ function serial_field_config_delete(FieldConfig $field) {
  *
  * For "field_config".
  */
-//function serial_field_config_update(FieldConfig $field) {
+// Function serial_field_config_update(FieldConfig $field) {
 //  if ($field->getType() == 'serial') {
 //    // @todo this hook could be used to notify the user about the incidence
 //    // of setting the field as translatable.
 //  }
-//}
-
+// }
 // **
 // * Implements hook_clone_node_alter().
 // */
@@ -104,10 +103,10 @@ function serial_field_config_delete(FieldConfig $field) {
 //    }
 //  }
 // }
-
 /**
  * Implements hook_theme().
  */
+
 function serial_theme() {
   // Register the theme for the serial default.
   return array('serial_default' => array('variables' => array('serial_id' => NULL)));
@@ -117,6 +116,7 @@ function serial_theme() {
  * Theme function for the serial default.
  *
  * @param array $variables
+ *
  * @return mixed
  */
 function theme_serial_default(array $variables) {

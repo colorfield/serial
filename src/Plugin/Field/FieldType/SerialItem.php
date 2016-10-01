@@ -6,9 +6,6 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\TranslatableInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\serial\SerialStorageInterface;
-
 
 /**
  * Plugin implementation of the 'serial' field type.

@@ -14,6 +14,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
  * Serial storage service definition.
  *
  * Begin by the D7 implementation with SQL tables.
+ *
  * @todo review extends SqlContentEntityStorage
  * @todo remove unused dependencies
  * @todo use DI for database, resolve SQL agnostic driver first
@@ -89,7 +90,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * @return \Drupal\Core\Database\StatementInterface|int|null
    * @throws \Exception
    */
-  public function generateValueFromName($storageName, $delete = TRUE){
+  public function generateValueFromName($storageName, $delete = TRUE) {
     $connection = Database::getConnection();
     // @todo review https://api.drupal.org/api/drupal/core%21includes%21database.inc/function/db_transaction/8.2.x
     $transaction = $connection->startTransaction();
@@ -114,8 +115,8 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       // Return the new unique serial value.
       return $sid;
     }
-      // @todo use dedicated Exception
-      // https://www.drupal.org/node/608166
+    // @todo use dedicated Exception
+    // https://www.drupal.org/node/608166
     catch (Exception $e) {
       $transaction->rollback();
       watchdog_exception('serial', $e);
@@ -184,9 +185,9 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function createStorageFromName($storageName) {
     $dbSchema = Database::getConnection()->schema();
     if (!$dbSchema->tableExists($storageName)) {
-      //$tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
-      //$tableDescription .= ', bundle ' . $entity->bundle();
-      //$dbSchema->createTable($storageName, $this->getSchema($tableDescription));
+      // $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
+      // $tableDescription .= ', bundle ' . $entity->bundle();
+      // $dbSchema->createTable($storageName, $this->getSchema($tableDescription));
       $dbSchema->createTable($storageName, $this->getSchema());
     }
   }
@@ -214,7 +215,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function initOldEntries($entityTypeId, $entityBundle, $fieldName) {
     $query = $this->entityQuery->get($entityTypeId);
     // @todo shall we assign serial id to unpublished as well?
-    //$query->condition('status', 1);
+    // $query->condition('status', 1);
     $query->condition('type', $entityBundle);
     $entityIds = $query->execute();
 
@@ -232,7 +233,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
       $serial = $this->generateValueFromName($storageName);
       // @todo review multilingual
       $entity->{$fieldName}->und[0]->value = $serial;
-      if($entity->save() === SAVED_UPDATED) {
+      if ($entity->save() === SAVED_UPDATED) {
         ++$updated;
       }
     }

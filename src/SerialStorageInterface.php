@@ -48,6 +48,7 @@ interface SerialStorageInterface {
    * @param $entityType
    * @param $bundleOld
    * @param $bundleNew
+   *
    * @return mixed
    */
   public function renameStorage($entityType, $bundleOld, $bundleNew);
@@ -93,6 +94,7 @@ interface SerialStorageInterface {
    *
    * @param FieldDefinitionInterface $fieldDefinition
    * @param FieldableEntityInterface $entity
+   *
    * @return mixed
    */
   public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
