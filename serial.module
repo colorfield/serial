@@ -7,6 +7,8 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\Node;
+use Drupal\serial\SerialStorageInterface;
 
 /**
  * Implements hook_help().
@@ -27,7 +29,8 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 // Function serial_field_formatter_info_alter(array &$info) {.
 //  @todo Review integer / number + SerialItem annotation.
 //  $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
-// }.
+// }
+
 /**
  * Implements hook_ENTITY_TYPE_create().
  *
@@ -90,19 +93,32 @@ function serial_field_config_delete(FieldConfig $field) {
 //    // of setting the field as translatable.
 //  }
 // }
-// **
-// * Implements hook_clone_node_alter().
-// */
-// function serial_clone_node_alter(stdClass $node) {
-//  // Reset values of all serial fields when cloning a node.
-//  foreach (field_info_instances('node', $node->type) as $field_name => $instance) {
-//    $info = field_info_field($field_name);
-//
-//    if ('serial' === $info['type']) {
-//      $node->{$field_name} = array();
-//    }
-//  }
-// }
+
+/**
+ *
+ *
+ * @param $entity_type
+ * @param $bundle_old
+ * @param $bundle_new
+ */
+function serial_entity_bundle_rename($entity_type, $bundle_old, $bundle_new) {
+  // @todo should not be implemented see https://www.drupal.org/node/2767507#comment-11682443
+}
+
+/**
+ * Implements hook_clone_node_alter().
+ * @todo to review once node_clone have a stable release
+ */
+function serial_clone_node_alter(Node &$node, $context) {
+  // Reset values of all serial fields when cloning a node.
+  foreach (\Drupal::entityManager()->getFieldDefinitions('node', $node->bundle()) as $field_name => $field_definition) {
+    if (!empty($field_definition->getTargetBundle())
+      && $field_definition->getType() == SerialStorageInterface::SERIAL_FIELD_TYPE) {
+      $node->{$field_name} = [];
+    }
+  }
+}
+
 /**
  * Implements hook_theme().
  */
