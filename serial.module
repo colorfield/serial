@@ -35,7 +35,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
  * For "field_config".
  */
 function serial_field_config_create(FieldConfig $field) {
-  if ($field->getType() == 'serial' && !$field->isSyncing()) {
+  if ($field->getType() == 'serial' && !$field->isSyncing() && !$field->isDeleted()) {
     // Create the assistant storage.
     /** @var SerialStorageInterface */
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
@@ -68,6 +68,7 @@ function serial_field_config_create(FieldConfig $field) {
  */
 function serial_field_config_delete(FieldConfig $field) {
   if ($field->getType() == 'serial') {
+    drupal_set_message('serial_field_config_delete');
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
     $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
