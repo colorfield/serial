@@ -216,7 +216,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
         ->loadUnchanged($entityId);
       $serial = $this->generateValueFromName($storageName);
       // @todo review multilingual
-      $entity->{$fieldName}->und[0]->value = $serial;
+      $entity->{$fieldName}->value = $serial;
       if ($entity->save() === SAVED_UPDATED) {
         ++$updated;
       }

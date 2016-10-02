@@ -40,7 +40,10 @@ function serial_field_config_create(FieldConfig $field) {
     );
     $serialStorage->createStorageFromName($storageName);
 
-    // Set serial values for old objects.
+    // Commit the change before setting values for existing entities.
+    $field->save();
+
+    // Set serial values for existing entities.
     $oldCount = $serialStorage->initOldEntries(
       $field->getTargetEntityTypeId(),
       $field->getTargetBundle(),
@@ -62,7 +65,6 @@ function serial_field_config_create(FieldConfig $field) {
  */
 function serial_field_config_delete(FieldConfig $field) {
   if ($field->getType() == 'serial') {
-    drupal_set_message('serial_field_config_delete');
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
     $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
