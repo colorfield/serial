@@ -14,31 +14,43 @@ interface SerialStorageInterface {
   const SERIAL_FIELD_TYPE = 'serial';
 
   /**
-   * Gets the assistant storage for a specific field.
+   * Creates the assistant storage name for a specific field.
    *
    * @param FieldDefinitionInterface $fieldDefinition
+   *   Field definition.
    * @param FieldableEntityInterface $entity
+   *   Entity.
    *
-   * @return mixed
+   * @return string
+   *   Storage name.
    */
-  public function getStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+  public function createStorageNameFromField(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
 
   /**
    * Creates the storage name.
    *
-   * @param $entityTypeId
-   * @param $entityBundle
-   * @param $fieldName
+   * @param string $entityTypeId
+   *   Entity type id.
+   * @param string $entityBundle
+   *   Entity bundle (entity type) name.
+   * @param string $fieldName
+   *   Field name.
    *
    * @return string
+   *   Storage name.
    */
   public function createStorageName($entityTypeId, $entityBundle, $fieldName);
 
   /**
-   * @param $storageName
-   * @param bool $delete
+   * Generates a unique serial value (unique per entity bundle).
    *
-   * @return mixed
+   * @param string $storageName
+   *   Storage name.
+   * @param bool $delete
+   *   Indicates if temporary records should be deleted.
+   *
+   * @return int
+   *   Unique serial id.
    */
   public function generateValueFromName($storageName, $delete = TRUE);
 
@@ -46,9 +58,14 @@ interface SerialStorageInterface {
    * Generates a unique serial value (unique per entity bundle).
    *
    * @param FieldDefinitionInterface $fieldDefinition
+   *   Field definition.
    * @param FieldableEntityInterface $entity
+   *   Entity.
    * @param bool $delete
    *   Indicates if temporary records should be deleted.
+   *
+   * @return int
+   *   Unique serial id.
    */
   public function generateValue(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity, $delete = TRUE);
 
@@ -76,16 +93,17 @@ interface SerialStorageInterface {
    * Creates an assistant serial storage for a new created field.
    *
    * @param FieldDefinitionInterface $fieldDefinition
+   *   Field definition.
    * @param FieldableEntityInterface $entity
+   *   Entity.
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
 
   /**
    * Creates an assistant serial storage for a new created field.
    *
-   * @param $storageName
-   *
-   * @return mixed
+   * @param string $storageName
+   *   Storage name.
    */
   public function createStorageFromName($storageName);
 
@@ -93,27 +111,32 @@ interface SerialStorageInterface {
    * Drops an assistant serial storage for a deleted field.
    *
    * @param FieldDefinitionInterface $fieldDefinition
+   *   Field definition.
    * @param FieldableEntityInterface $entity
+   *   Entity.
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
 
   /**
    * Drops an assistant serial storage for a deleted field.
    *
-   * @param $storageName
-   *
-   * @return mixed
+   * @param string $storageName
+   *   Storage name.
    */
   public function dropStorageFromName($storageName);
 
   /**
    * Initializes the value of a new serial field in existing entities.
    *
-   * @param $entityTypeId
-   * @param $entityBundle
-   * @param $fieldName
+   * @param string $entityTypeId
+   *   Entity type id.
+   * @param string $entityBundle
+   *   Entity bundle (entity type) name.
+   * @param string $fieldName
+   *   Field name.
    *
    * @return int
+   *   Amount of entries that were updated.
    */
   public function initOldEntries($entityTypeId, $entityBundle, $fieldName);
 

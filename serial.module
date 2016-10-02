@@ -31,7 +31,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 function serial_field_config_create(FieldConfig $field) {
   if ($field->getType() == 'serial' && !$field->isSyncing() && !$field->isDeleted()) {
     // Create the assistant storage.
-    /** @var SerialStorageInterface */
+    /** @var SerialStorageInterface $serialStorage */
     $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
     $storageName = $serialStorage->createStorageName(
       $field->getTargetEntityTypeId(),
@@ -74,25 +74,6 @@ function serial_field_config_delete(FieldConfig $field) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_update().
- *
- * For "field_config".
- */
-// Function serial_field_config_update(FieldConfig $field) {
-// if ($field->getType() == 'serial') {
-// // @todo this hook could be used to notify the user about the incidence
-// // of setting the field as translatable.
-// }
-// }.
-/**
- * Implements hook_field_formatter_info_alter().
- */
-// Function serial_field_formatter_info_alter(array &$info) {.
-// @todo Review integer / number + SerialItem annotation.
-// $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
-// }.
-
-/**
  * Implements hook_clone_node_alter().
  *
  * @todo to review once node_clone have a stable release
@@ -119,8 +100,10 @@ function serial_theme() {
  * Theme function for the serial default.
  *
  * @param array $variables
+ *   Theme variables.
  *
- * @return mixed
+ * @return array
+ *   Theme variables.
  */
 function theme_serial_default(array $variables) {
   return $variables['serial_id'];

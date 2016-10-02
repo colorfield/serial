@@ -55,7 +55,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function getStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  public function createStorageNameFromField(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     return $this->createStorageName(
       $entity->getEntityTypeId(),
       $entity->bundle(),
@@ -116,7 +116,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function generateValue(FieldDefinitionInterface $fieldDefinition,
                                 FieldableEntityInterface $entity,
                                 $delete = TRUE) {
-    $storageName = $this->getStorage($fieldDefinition, $entity);
+    $storageName = $this->createStorageNameFromField($fieldDefinition, $entity);
     return $this->generateValueFromName($storageName, $delete);
   }
 
@@ -164,7 +164,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $storageName = $this->getStorage($fieldDefinition, $entity);
+    $storageName = $this->createStorageNameFromField($fieldDefinition, $entity);
     $this->createStorageFromName($storageName);
   }
 
@@ -182,7 +182,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $this->dropStorageFromName($this->getStorage($fieldDefinition, $entity));
+    $this->dropStorageFromName($this->createStorageNameFromField($fieldDefinition, $entity));
   }
 
   /**
