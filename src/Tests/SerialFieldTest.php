@@ -32,7 +32,7 @@ class SerialFieldTest extends WebTestBase {
   protected $webUser;
 
   /**
-   *
+   * @inheritdoc
    */
   protected function setUp() {
     parent::setUp();
@@ -42,7 +42,6 @@ class SerialFieldTest extends WebTestBase {
     $this->drupalLogin($this->webUser);
   }
 
-  // Test field.
   /**
    * Helper function for testSerialField().
    */

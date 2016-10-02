@@ -94,7 +94,7 @@ class SerialItem extends FieldItemBase {
       // depending of what is the design.
       // This should probably be solved by the end user decision
       // while setting the field translation.
-      /** @var \Drupal\Core\Language\LanguageManagerInterface */
+      /** @var \Drupal\Core\Language\LanguageManagerInterface $languageManager */
       $languageManager = \Drupal::getContainer()->get('language_manager');
       // @todo isMultilingual is global, prefer local hasTranslation
       if ($languageManager->isMultilingual() && $entity instanceof TranslatableInterface) {
@@ -103,7 +103,7 @@ class SerialItem extends FieldItemBase {
     }
 
     if ($newSerial) {
-      /** @var \Drupal\serial\SerialStorageInterface */
+      /** @var \Drupal\serial\SerialStorageInterface $serialStorage */
       $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
       $serial = $serialStorage->generateValue($this->getFieldDefinition(), $this->getEntity());
     }

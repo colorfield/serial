@@ -13,6 +13,8 @@ use Drupal\Core\Entity\Query\QueryFactory;
 /**
  * Serial storage service definition.
  *
+ * @todo before going further in other impl to SerialStorageInterface must be reviewed.
+ *
  * SQL implementation for SerialStorage.
  */
 class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface {
@@ -53,7 +55,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
+  public function getStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
     return $this->createStorageName(
       $entity->getEntityTypeId(),
       $entity->bundle(),
@@ -62,13 +64,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * Creates the escaped table name.
-   *
-   * @param $entityTypeId
-   * @param $entityBundle
-   * @param $fieldName
-   *
-   * @return string
+   * {@inheritdoc}
    */
   public function createStorageName($entityTypeId, $entityBundle, $fieldName) {
     // Remember about max length of MySQL tables - 64 symbols.
@@ -78,13 +74,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   }
 
   /**
-   * @todo description
-   * @todo refactoring
-   *
-   * @param $storageName
-   * @param $delete
-   * @return \Drupal\Core\Database\StatementInterface|int|null
-   * @throws \Exception
+   * {@inheritdoc}
    */
   public function generateValueFromName($storageName, $delete = TRUE) {
     $connection = Database::getConnection();
@@ -126,7 +116,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function generateValue(FieldDefinitionInterface $fieldDefinition,
                                 FieldableEntityInterface $entity,
                                 $delete = TRUE) {
-    $storageName = $this->getStorageName($fieldDefinition, $entity);
+    $storageName = $this->getStorage($fieldDefinition, $entity);
     return $this->generateValueFromName($storageName, $delete);
   }
 
@@ -166,15 +156,20 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
+  public function getAllFields() {
+    return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $storageName = $this->getStorageName($fieldDefinition, $entity);
+    $storageName = $this->getStorage($fieldDefinition, $entity);
     $this->createStorageFromName($storageName);
   }
 
   /**
-   * @todo description.
-   * @todo class refactoring needed to get something consistent with method signatures / facade.
-   * @param $storageName
+   * {@inheritdoc}
    */
   public function createStorageFromName($storageName) {
     $dbSchema = Database::getConnection()->schema();
@@ -187,13 +182,11 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
    * {@inheritdoc}
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity) {
-    $this->dropStorageFromName($this->getStorageName($fieldDefinition, $entity));
+    $this->dropStorageFromName($this->getStorage($fieldDefinition, $entity));
   }
 
   /**
-   * @todo description.
-   * @todo class refactoring needed to get something consistent with method signatures / facade.
-   * @param $storageName
+   * {@inheritdoc}
    */
   public function dropStorageFromName($storageName) {
     $dbSchema = Database::getConnection()->schema();
@@ -230,20 +223,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     }
 
     return $updated;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function renameStorage($entityType, $bundleOld, $bundleNew) {
-    // TODO: Implement renameStorage() method.
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getAllFields() {
-    return \Drupal::entityManager()->getFieldMapByFieldType(SerialStorageInterface::SERIAL_FIELD_TYPE);
   }
 
 }

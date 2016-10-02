@@ -26,7 +26,7 @@ function serial_help($route_name, RouteMatchInterface $route_match) {
 /**
  * Implements hook_ENTITY_TYPE_create().
  *
- * For "field_config".
+ * @inheritdoc
  */
 function serial_field_config_create(FieldConfig $field) {
   if ($field->getType() == 'serial' && !$field->isSyncing() && !$field->isDeleted()) {
@@ -58,7 +58,7 @@ function serial_field_config_create(FieldConfig $field) {
 /**
  * Implements hook_ENTITY_TYPE_delete().
  *
- * For "field_config".
+ * @inheritdoc
  */
 function serial_field_config_delete(FieldConfig $field) {
   if ($field->getType() == 'serial') {
@@ -79,24 +79,24 @@ function serial_field_config_delete(FieldConfig $field) {
  * For "field_config".
  */
 // Function serial_field_config_update(FieldConfig $field) {
-//  if ($field->getType() == 'serial') {
-//    // @todo this hook could be used to notify the user about the incidence
-//    // of setting the field as translatable.
-//  }
+// if ($field->getType() == 'serial') {
+// // @todo this hook could be used to notify the user about the incidence
+// // of setting the field as translatable.
+// }
 // }.
 /**
  * Implements hook_field_formatter_info_alter().
  */
 // Function serial_field_formatter_info_alter(array &$info) {.
-//  @todo Review integer / number + SerialItem annotation.
-//  $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
+// @todo Review integer / number + SerialItem annotation.
+// $info['text_default']['field_types'][] = SerialStorageInterface::SERIAL_FIELD_TYPE;
 // }.
+
 /**
  * Implements hook_clone_node_alter().
  *
  * @todo to review once node_clone have a stable release
  */
-
 function serial_clone_node_alter(Node &$node, $context) {
   // Reset values of all serial fields when cloning a node.
   foreach (\Drupal::entityManager()->getFieldDefinitions('node', $node->bundle()) as $field_name => $field_definition) {

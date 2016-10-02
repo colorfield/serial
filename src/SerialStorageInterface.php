@@ -8,50 +8,39 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
  * Defines an interface for node serial storage classes.
- *
- * @todo review extends ContentEntityStorageInterface
- * @todo document + inherit in implementation.
  */
 interface SerialStorageInterface {
+
   const SERIAL_FIELD_TYPE = 'serial';
 
   /**
-   * Creates an assistant serial storage for a new created field.
+   * Gets the assistant storage for a specific field.
    *
    * @param FieldDefinitionInterface $fieldDefinition
    * @param FieldableEntityInterface $entity
-   */
-  public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
-
-  /**
-   * Drops an assistant serial storage for a deleted field.
    *
-   * @param FieldDefinitionInterface $fieldDefinition
-   * @param FieldableEntityInterface $entity
+   * @return mixed
    */
-  public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+  public function getStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
 
   /**
-   * Initializes the value of a new serial field in existing entities.
+   * Creates the storage name.
    *
    * @param $entityTypeId
    * @param $entityBundle
    * @param $fieldName
    *
-   * @return int
+   * @return string
    */
-  public function initOldEntries($entityTypeId, $entityBundle, $fieldName);
+  public function createStorageName($entityTypeId, $entityBundle, $fieldName);
 
   /**
-   * Renames the storage, after a bundle rename.
-   *
-   * @param $entityType
-   * @param $bundleOld
-   * @param $bundleNew
+   * @param $storageName
+   * @param bool $delete
    *
    * @return mixed
    */
-  public function renameStorage($entityType, $bundleOld, $bundleNew);
+  public function generateValueFromName($storageName, $delete = TRUE);
 
   /**
    * Generates a unique serial value (unique per entity bundle).
@@ -60,12 +49,8 @@ interface SerialStorageInterface {
    * @param FieldableEntityInterface $entity
    * @param bool $delete
    *   Indicates if temporary records should be deleted.
-   *
-   * @return \Drupal\Core\Database\StatementInterface|int|null
-   *
-   * @throws \Exception
    */
-  public function generateValue(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity, $delete);
+  public function generateValue(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity, $delete = TRUE);
 
   /**
    * Gets the schema of the assistant storage for generating serial values.
@@ -88,13 +73,48 @@ interface SerialStorageInterface {
   public function getAllFields();
 
   /**
-   * Gets the name of the assistant storage for a specific field.
+   * Creates an assistant serial storage for a new created field.
    *
    * @param FieldDefinitionInterface $fieldDefinition
    * @param FieldableEntityInterface $entity
+   */
+  public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+
+  /**
+   * Creates an assistant serial storage for a new created field.
+   *
+   * @param $storageName
    *
    * @return mixed
    */
-  public function getStorageName(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+  public function createStorageFromName($storageName);
+
+  /**
+   * Drops an assistant serial storage for a deleted field.
+   *
+   * @param FieldDefinitionInterface $fieldDefinition
+   * @param FieldableEntityInterface $entity
+   */
+  public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
+
+  /**
+   * Drops an assistant serial storage for a deleted field.
+   *
+   * @param $storageName
+   *
+   * @return mixed
+   */
+  public function dropStorageFromName($storageName);
+
+  /**
+   * Initializes the value of a new serial field in existing entities.
+   *
+   * @param $entityTypeId
+   * @param $entityBundle
+   * @param $fieldName
+   *
+   * @return int
+   */
+  public function initOldEntries($entityTypeId, $entityBundle, $fieldName);
 
 }
