@@ -11,7 +11,7 @@
  * Return the schema of all the assistant tables (one per field instance).
  */
 function serial_schema() {
-  /** @var SerialStorageInterface */
+  /** @var \Drupal\serial\SerialStorageInterface */
   $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
   $tableSchema = $serialStorage->getSchema();
   $schema = array();

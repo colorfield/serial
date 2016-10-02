@@ -70,8 +70,6 @@ interface SerialStorageInterface {
   /**
    * Gets the schema of the assistant storage for generating serial values.
    *
-   * @param null $tableDescription
-   *
    * @return array
    *   Assistant storage schema.
    */

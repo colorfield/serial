@@ -13,25 +13,21 @@ use Drupal\Core\Entity\Query\QueryFactory;
 /**
  * Serial storage service definition.
  *
- * Begin by the D7 implementation with SQL tables.
- *
- * @todo review extends SqlContentEntityStorage
- * @todo remove unused dependencies
- * @todo use DI for database, resolve SQL agnostic driver first
+ * SQL implementation for SerialStorage.
  */
 class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInterface {
 
   /**
    * Drupal\Core\Entity\Query\QueryInterface definition.
    *
-   * @var Drupal\Core\Entity\Query\QueryInterface
+   * @var \Drupal\Core\Entity\Query\QueryInterface
    */
   protected $entityQuery;
 
   /**
    * Drupal\Core\Entity\EntityTypeManager definition.
    *
-   * @var Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   protected $entityTypeManager;
 
@@ -117,7 +113,7 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
     }
     // @todo use dedicated Exception
     // https://www.drupal.org/node/608166
-    catch (Exception $e) {
+    catch (\Exception $e) {
       $transaction->rollback();
       watchdog_exception('serial', $e);
       throw $e;
@@ -137,12 +133,13 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   /**
    * {@inheritdoc}
    */
-  public function getSchema($tableDescription = NULL) {
+  public function getSchema() {
     $schema = array(
       'fields' => array(
         'sid' => array(
-          // Serial Drupal DB type, not SerialStorageInterface::SERIAL_FIELD_TYPE
-          // means auto increment
+          // Serial Drupal DB type
+          // not SerialStorageInterface::SERIAL_FIELD_TYPE
+          // means auto increment.
           // https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/8.2.x
           'type' => 'serial',
           'not null' => TRUE,
@@ -163,9 +160,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
         'uniqid' => array('uniqid'),
       ),
     );
-    if (isset($description)) {
-      $schema['description'] = $tableDescription;
-    }
     return $schema;
   }
 
@@ -185,9 +179,6 @@ class SerialSQLStorage implements ContainerInjectionInterface, SerialStorageInte
   public function createStorageFromName($storageName) {
     $dbSchema = Database::getConnection()->schema();
     if (!$dbSchema->tableExists($storageName)) {
-      // $tableDescription = 'Serial storage for entity type ' . $entity->getEntityTypeId();
-      // $tableDescription .= ', bundle ' . $entity->bundle();
-      // $dbSchema->createTable($storageName, $this->getSchema($tableDescription));
       $dbSchema->createTable($storageName, $this->getSchema());
     }
   }
