@@ -32,7 +32,7 @@ class SerialFieldTest extends WebTestBase {
   protected $webUser;
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
