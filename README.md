@@ -1,4 +1,8 @@
 # Serial Field
+
+**The 8.x-1.x branch is now on Drupal.org**
+https://www.drupal.org/project/serial/git-instructions
+
 Drupal 8 port of the [Serial Field module]
 (https://www.drupal.org/project/serial).
 [Related issue](https://www.drupal.org/node/2767507) on Drupal.org.
